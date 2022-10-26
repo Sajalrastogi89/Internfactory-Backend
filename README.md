@@ -1,4 +1,4 @@
-# crudAPI
+# LoginAPI and SignUpAPI
 For adding data in table 
 url->localhost:8080/insert
 Feilds-> name,roll_no,marks
