@@ -1,0 +1,9 @@
+2022-10-27 00:49:45 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table [*]user (email varchar(255) not null, first_name varchar(255), last_name varchar(255), password varchar(255), role varchar(255), primary key (email))"; expected "identifier"; SQL statement:
+create table user (email varchar(255) not null, first_name varchar(255), last_name varchar(255), password varchar(255), role varchar(255), primary key (email)) [42001-214]
+2022-10-27 00:52:09 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table [*]user (email varchar(255) not null, first_name varchar(255), last_name varchar(255), password varchar(255), role varchar(255), primary key (email))"; expected "identifier"; SQL statement:
+create table user (email varchar(255) not null, first_name varchar(255), last_name varchar(255), password varchar(255), role varchar(255), primary key (email)) [42001-214]
+2022-10-27 01:06:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "create table [*]user (username varchar(255) not null, firstname varchar(255), lastname varchar(255), password varchar(255), role varchar(255), primary key (username))"; expected "identifier"; SQL statement:
+create table user (username varchar(255) not null, firstname varchar(255), lastname varchar(255), password varchar(255), role varchar(255), primary key (username)) [42001-214]
