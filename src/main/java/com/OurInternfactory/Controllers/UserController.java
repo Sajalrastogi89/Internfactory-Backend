@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -24,14 +23,12 @@ public class UserController {
         return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
     }
     //PUT -update user
-
     @PutMapping("/{userid}")
     public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userid") Integer userId){
         UserDto updatedUser= this.userService.updateUser(userDto, userId);
         return ResponseEntity.ok(updatedUser);
     }
     //Delete - delete user
-
     @DeleteMapping("/{userId}")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable("userId") Integer userid){
         this.userService.DeleteUser(userid);

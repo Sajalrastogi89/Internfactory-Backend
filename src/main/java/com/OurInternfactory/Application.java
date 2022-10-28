@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+public class Application implements CommandLineRunner{
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -25,6 +25,6 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println(this.passwordEncoder.encode("pranavBisaria@Intern123"));
+		System.out.println(this.passwordEncoder.encode("sajalRastogi@123"));
 	}
 }

@@ -1,0 +1,12 @@
+2022-10-28 19:26:43 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM ""user_data""role [*]role user"; SQL statement:
+SELECT * FROM "user_data"role role user [42000-214]
+2022-10-28 19:26:52 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]user"; SQL statement:
+user [42000-214]
+2022-10-28 19:27:08 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROM ""user_role""[*]user"; SQL statement:
+SELECT * FROM "user_role"user [42000-214]
+2022-10-28 19:30:40 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "role""user_data" not found; SQL statement:
+SELECT * FROM "role""user_data" [42102-214]
