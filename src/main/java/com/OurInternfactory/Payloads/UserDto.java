@@ -14,13 +14,14 @@ import lombok.Setter;
 public class UserDto {
     private Integer id;
     @NotEmpty
-    @Size(min = 4, message = "Username must be min of 4 character")
+    @Size(min = 4, message = "First Name must be min of 4 character")
     private String firstname;
     private String lastname;
+    @NotEmpty
     @Email(message = "Email Address is not Valid!!")
     private String email;
     @NotEmpty
-    @Size(min=8, max=25, message = "Password must be minimum of 8 characters and maximum of 25 characters")
+    @Size(min = 8, message = "Password must be minimum of 8 characters")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Password must Contain at least one uppercase letter, one lowercase letter, one numeric character, one special character and no spaces")
     private String password;
 }
