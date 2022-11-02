@@ -134,16 +134,17 @@ public class UserServiceImpl implements UserService {
         Paragraph paragraph=new Paragraph(cvData.getName()+"\n",fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
+
         Font fontParagraph=FontFactory.getFont(FontFactory.HELVETICA);
-        fontParagraph.setSize(15);
+        fontParagraph.setSize(10);
         Font fontParagraph1=FontFactory.getFont(FontFactory.HELVETICA);
-        fontParagraph1.setSize(10);
+        fontParagraph1.setSize(12);
         Font fontParagraph2=FontFactory.getFont(FontFactory.HELVETICA);
-        fontParagraph2.setSize(12);
+        fontParagraph2  .setSize(15);
 //Skills
         Paragraph paragraph2=new Paragraph("SKILLS\n",fontParagraph);
         paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
-        Paragraph paragraph3=new Paragraph(cvData.getSkill1()+"\n"+cvData.getSkill2()+"\n"+cvData.getSkill3()+"\n"+cvData.getSkill4()+"\n"+cvData.getSkill5()+"\n",fontParagraph1);
+        Paragraph paragraph3=new Paragraph(cvData.getSkill1()+"\n"+cvData.getSkill2()+"\n"+cvData.getSkill3()+"\n",fontParagraph1);
         paragraph3.setAlignment(Paragraph.ALIGN_LEFT);
 
      //Projects
@@ -166,12 +167,6 @@ public class UserServiceImpl implements UserService {
         paragraph9.setAlignment(Paragraph.ALIGN_LEFT);
 
 
-        //Project3
-        Paragraph paragraph10=new Paragraph(cvData.getProject3Heading(),fontParagraph2);
-        paragraph10.setAlignment(Paragraph.ALIGN_LEFT);
-
-        Paragraph paragraph11=new Paragraph(cvData.getProject3Description(),fontParagraph1);
-        paragraph11.setAlignment(Paragraph.ALIGN_LEFT);
 
 
         //Experiences
@@ -191,11 +186,6 @@ public class UserServiceImpl implements UserService {
         Paragraph paragraph15=new Paragraph(cvData.getExperience2role(),fontParagraph1);
         paragraph15.setAlignment(Paragraph.ALIGN_LEFT);
         //Experience3
-        Paragraph paragraph16=new Paragraph(cvData.getExperience3(),fontParagraph2);
-        paragraph16.setAlignment(Paragraph.ALIGN_LEFT);
-
-        Paragraph paragraph17=new Paragraph(cvData.getExperience3role(),fontParagraph1);
-        paragraph17.setAlignment(Paragraph.ALIGN_LEFT);
 
 
 
@@ -209,9 +199,7 @@ public class UserServiceImpl implements UserService {
         //Award2
         Paragraph paragraph19=new Paragraph(cvData.getAward2(),fontParagraph1);
         paragraph19.setAlignment(Paragraph.ALIGN_LEFT);
-        //Award3
-        Paragraph paragraph20=new Paragraph(cvData.getAward3(),fontParagraph1);
-        paragraph20.setAlignment(Paragraph.ALIGN_LEFT);
+
 
 
 
@@ -237,19 +225,17 @@ public class UserServiceImpl implements UserService {
         document.add(paragraph6);
         document.add(paragraph8);
         document.add(paragraph9);
-        document.add(paragraph10);
-        document.add(paragraph11);
+
         document.add(paragraph80);
         document.add(paragraph12);
         document.add(paragraph13);
         document.add(paragraph14);
         document.add(paragraph15);
-        document.add(paragraph16);
-        document.add(paragraph17);
+
         document.add(paragraph90);
         document.add(paragraph18);
         document.add(paragraph19);
-        document.add(paragraph20);
+
         document.add(paragraph21);
         document.add(paragraph22);
         document.add(paragraph23);
