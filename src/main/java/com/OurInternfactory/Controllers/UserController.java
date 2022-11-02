@@ -1,6 +1,7 @@
 package com.OurInternfactory.Controllers;
 
 import com.OurInternfactory.Payloads.ApiResponse;
+import com.OurInternfactory.Payloads.CVGenerator;
 import com.OurInternfactory.Payloads.UserDto;
 import com.OurInternfactory.Services.UserService;
 import javax.validation.Valid;
@@ -47,5 +48,11 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getSingleUser(@PathVariable("userId") Integer userId){
         return ResponseEntity.ok(this.userService.getUserById(userId));
+    }
+    @GetMapping("/CVGenerator")
+    public ResponseEntity<CVGenerator> generate(@RequestBody CVGenerator cvgenerator){
+//        CVGenerator generateCV=this.userService.createUser(cvgenerator);
+        return new ResponseEntity<>( HttpStatus.ACCEPTED);
+
     }
 }

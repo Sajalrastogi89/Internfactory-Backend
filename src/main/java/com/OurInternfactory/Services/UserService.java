@@ -1,7 +1,10 @@
 package com.OurInternfactory.Services;
+import com.OurInternfactory.Payloads.CVGenerator;
 import com.OurInternfactory.Payloads.ForgetPassword;
 import com.OurInternfactory.Payloads.UserDto;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -18,4 +21,5 @@ public interface UserService {
     void DeleteUser(Integer userId);
     void updateUserPass(ForgetPassword password);
     boolean emailExists(String email);
+void export(HttpServletResponse response, CVGenerator cvData) throws IOException;
 }

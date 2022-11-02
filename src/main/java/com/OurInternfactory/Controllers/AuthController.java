@@ -5,13 +5,17 @@ import com.OurInternfactory.Models.User;
 import com.OurInternfactory.Payloads.*;
 import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Security.JwtAuthRequest;
+
 import com.OurInternfactory.Services.JWTTokenGenerator;
 import com.OurInternfactory.Services.OTPService;
 import com.OurInternfactory.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Date;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -25,11 +29,13 @@ public class AuthController {
     private final JWTTokenGenerator jwtTokenGenerator;
     private final OTPService otpService;
 
+
     public AuthController(UserRepo userRepo, UserService userService, JWTTokenGenerator jwtTokenGenerator, OTPService otpService) {
         this.userRepo = userRepo;
         this.userService = userService;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.otpService = otpService;
+
     }
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> createToken(@Valid @RequestBody JwtAuthRequest request) {
@@ -105,5 +111,14 @@ public class AuthController {
         }
         return new ResponseEntity<>("Password Reset SUCCESS", OK);
     }
+    @GetMapping("/pdf/generate")
+    public void generateCV(HttpServletResponse response,@RequestBody CVGenerator cvData) throws IOException {
+        response.setContentType("application/pdf");
+String headerKey="Content-Disposition";
+String headerValue="attachment; filename=GeneratedCV.pdf";
+response.setHeader(headerKey,headerValue);
+this.userService.export(response,cvData);
+    }
+
 
 }
