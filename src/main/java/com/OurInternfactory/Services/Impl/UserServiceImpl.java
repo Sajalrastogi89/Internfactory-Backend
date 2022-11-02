@@ -193,12 +193,9 @@ public class UserServiceImpl implements UserService {
         Paragraph paragraph90=new Paragraph("AWARDS\n",fontParagraph);
         paragraph90.setAlignment(Paragraph.ALIGN_LEFT);
         //Award1
-        Paragraph paragraph18=new Paragraph("->"+cvData.getAward1(),fontParagraph1);
+        Paragraph paragraph18=new Paragraph("->"+cvData.getAward1()+"\n"+"->"+cvData.getAward2(),fontParagraph1);
         paragraph18.setAlignment(Paragraph.ALIGN_LEFT);
 
-        //Award2
-        Paragraph paragraph19=new Paragraph("->"+cvData.getAward2(),fontParagraph1);
-        paragraph19.setAlignment(Paragraph.ALIGN_LEFT);
 
 
 
@@ -208,14 +205,9 @@ public class UserServiceImpl implements UserService {
         Paragraph paragraph21=new Paragraph("PERCENTAGE\n",fontParagraph);
         paragraph21.setAlignment(Paragraph.ALIGN_LEFT);
 //University
-        Paragraph paragraph22=new Paragraph("University Percentage:"+cvData.getUniversityMarks(),fontParagraph);
+        Paragraph paragraph22=new Paragraph("University Percentage:"+cvData.getUniversityMarks()+"\n"+"12th Percentage:"+cvData.getTwelth_marks()+"\n"+"10th Percentage:"+cvData.getTenth_marks(),fontParagraph);
         paragraph22.setAlignment(Paragraph.ALIGN_LEFT);
-        //12th
-        Paragraph paragraph23=new Paragraph("12th Percentage:"+cvData.getTwelth_marks(),fontParagraph);
-        paragraph23.setAlignment(Paragraph.ALIGN_LEFT);
-        //10th
-        Paragraph paragraph24=new Paragraph("10th Percentage:"+cvData.getTenth_marks(),fontParagraph);
-        paragraph24.setAlignment(Paragraph.ALIGN_LEFT);
+
 
         document.add(paragraph);
         document.add(paragraph2);
@@ -234,12 +226,11 @@ public class UserServiceImpl implements UserService {
 
         document.add(paragraph90);
         document.add(paragraph18);
-        document.add(paragraph19);
+
 
         document.add(paragraph21);
         document.add(paragraph22);
-        document.add(paragraph23);
-        document.add(paragraph24);
+
 
 
         document.close();
