@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
 //Skills
         Paragraph paragraph2=new Paragraph("SKILLS\n",fontParagraph);
         paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
-        Paragraph paragraph3=new Paragraph(cvData.getSkill1()+"\n"+cvData.getSkill2()+"\n"+cvData.getSkill3()+"\n",fontParagraph1);
+        Paragraph paragraph3=new Paragraph("->"+cvData.getSkill1()+"\n"+"->"+cvData.getSkill2()+"\n"+"->"+cvData.getSkill3()+"\n",fontParagraph1);
         paragraph3.setAlignment(Paragraph.ALIGN_LEFT);
 
      //Projects
@@ -152,18 +152,18 @@ public class UserServiceImpl implements UserService {
         Paragraph paragraph4=new Paragraph("PROJECTS\n",fontParagraph);
         paragraph4.setAlignment(Paragraph.ALIGN_LEFT);
 //Project1
-        Paragraph paragraph5=new Paragraph(cvData.getProject1Heading(),fontParagraph2);
+        Paragraph paragraph5=new Paragraph("1 "+cvData.getProject1Heading(),fontParagraph2);
         paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
 
-        Paragraph paragraph6=new Paragraph(cvData.getProject1Description(),fontParagraph1);
+        Paragraph paragraph6=new Paragraph("->"+cvData.getProject1Description(),fontParagraph1);
         paragraph6.setAlignment(Paragraph.ALIGN_LEFT);
         //Project2
 
 
-        Paragraph paragraph8=new Paragraph(cvData.getProject2Heading(),fontParagraph2);
+        Paragraph paragraph8=new Paragraph("2 "+cvData.getProject2Heading(),fontParagraph2);
         paragraph8.setAlignment(Paragraph.ALIGN_LEFT);
 
-        Paragraph paragraph9=new Paragraph(cvData.getProject2Description(),fontParagraph1);
+        Paragraph paragraph9=new Paragraph("->"+cvData.getProject2Description(),fontParagraph1);
         paragraph9.setAlignment(Paragraph.ALIGN_LEFT);
 
 
@@ -173,17 +173,17 @@ public class UserServiceImpl implements UserService {
         Paragraph paragraph80=new Paragraph("EXPERIENCE\n",fontParagraph);
         paragraph80.setAlignment(Paragraph.ALIGN_LEFT);
         //Experience1
-        Paragraph paragraph12=new Paragraph(cvData.getExperience1(),fontParagraph2);
+        Paragraph paragraph12=new Paragraph("1 "+cvData.getExperience1(),fontParagraph2);
         paragraph12.setAlignment(Paragraph.ALIGN_LEFT);
 
-        Paragraph paragraph13=new Paragraph(cvData.getExperience1role(),fontParagraph1);
+        Paragraph paragraph13=new Paragraph("->"+cvData.getExperience1role(),fontParagraph1);
         paragraph13.setAlignment(Paragraph.ALIGN_LEFT);
 
         //Experience2
-        Paragraph paragraph14=new Paragraph(cvData.getExperience2(),fontParagraph2);
+        Paragraph paragraph14=new Paragraph("2 "+cvData.getExperience2(),fontParagraph2);
         paragraph14.setAlignment(Paragraph.ALIGN_LEFT);
 
-        Paragraph paragraph15=new Paragraph(cvData.getExperience2role(),fontParagraph1);
+        Paragraph paragraph15=new Paragraph("->"+cvData.getExperience2role(),fontParagraph1);
         paragraph15.setAlignment(Paragraph.ALIGN_LEFT);
         //Experience3
 
@@ -193,11 +193,11 @@ public class UserServiceImpl implements UserService {
         Paragraph paragraph90=new Paragraph("AWARDS\n",fontParagraph);
         paragraph90.setAlignment(Paragraph.ALIGN_LEFT);
         //Award1
-        Paragraph paragraph18=new Paragraph(cvData.getAward1(),fontParagraph1);
+        Paragraph paragraph18=new Paragraph("->"+cvData.getAward1(),fontParagraph1);
         paragraph18.setAlignment(Paragraph.ALIGN_LEFT);
 
         //Award2
-        Paragraph paragraph19=new Paragraph(cvData.getAward2(),fontParagraph1);
+        Paragraph paragraph19=new Paragraph("->"+cvData.getAward2(),fontParagraph1);
         paragraph19.setAlignment(Paragraph.ALIGN_LEFT);
 
 
