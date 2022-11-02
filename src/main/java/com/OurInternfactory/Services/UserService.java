@@ -5,6 +5,9 @@ import com.OurInternfactory.Payloads.UserDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import com.OurInternfactory.Payloads.ForgetPassword;
+import com.OurInternfactory.Payloads.UserDto;
+
 import java.util.List;
 
 public interface UserService {

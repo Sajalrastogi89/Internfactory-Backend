@@ -1,9 +1,6 @@
 package com.OurInternfactory.Services;
-
 import org.springframework.stereotype.Service;
-
 import java.util.Random;
-
 @Service
 public class OTPService {
     private final EmailService emailService;
@@ -23,5 +20,4 @@ public class OTPService {
         String to = email;
         this.emailService.sendEmail(subject, message, to);
         return otpCheck;
-    }
-}
+    }}

@@ -5,17 +5,13 @@ import com.OurInternfactory.Models.User;
 import com.OurInternfactory.Payloads.*;
 import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Security.JwtAuthRequest;
-
 import com.OurInternfactory.Services.JWTTokenGenerator;
 import com.OurInternfactory.Services.OTPService;
 import com.OurInternfactory.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Date;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -29,16 +25,15 @@ public class AuthController {
     private final JWTTokenGenerator jwtTokenGenerator;
     private final OTPService otpService;
 
-
     public AuthController(UserRepo userRepo, UserService userService, JWTTokenGenerator jwtTokenGenerator, OTPService otpService) {
         this.userRepo = userRepo;
         this.userService = userService;
         this.jwtTokenGenerator = jwtTokenGenerator;
         this.otpService = otpService;
-
     }
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> createToken(@Valid @RequestBody JwtAuthRequest request) {
+        request.setUsername(request.getUsername().toLowerCase());
         User user = this.userRepo.findByEmail(request.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+request.getUsername(), 0));
         if(user.isActive()) {
             System.out.println(request.getPassword() + "\n" +request.getUsername());
@@ -53,6 +48,7 @@ public class AuthController {
     //SignUP
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserDto userDto){
+        userDto.setEmail(userDto.getEmail().toLowerCase());
         if(!userService.emailExists(userDto.getEmail())) {
             //write code for send otp to email....
             this.userService.registerNewUser(userDto, otpService.OTPRequest(userDto.getEmail()));
@@ -64,6 +60,7 @@ public class AuthController {
     }
     @PostMapping("/forget")
     public ResponseEntity<String> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {
+        forgetEmail.setEmail(forgetEmail.getEmail().toLowerCase());
         if(userService.emailExists(forgetEmail.getEmail())){
             //write code for send otp to email....
             User user = this.userRepo.findByEmail(forgetEmail.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "email: "+forgetEmail.getEmail(), 0));
@@ -79,6 +76,7 @@ public class AuthController {
     }
     @PostMapping("/verifyotp")
     public ResponseEntity<String> verifyOtp(@Valid @RequestBody OtpDto otpDto) {
+        otpDto.setEmail(otpDto.getEmail().toLowerCase());
         User userOTP = this.userRepo.findByEmail(otpDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+otpDto.getEmail(), 0));
         if(this.userService.isOTPValid(otpDto.getEmail()) && userOTP.getOtp()!=null) {
             if (userOTP.getOtp() == otpDto.getOne_time_password()) {
@@ -97,6 +95,7 @@ public class AuthController {
     }
     @PostMapping("/resetpass")
     public ResponseEntity<String> resetPass(@Valid @RequestBody ForgetPassword forgetPassword){
+        forgetPassword.setEmail(forgetPassword.getEmail().toLowerCase());
         User userRP = this.userRepo.findByEmail(forgetPassword.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+forgetPassword.getEmail(), 0));
         if(userRP.isActive()){
             if ((forgetPassword.getPassword()).equals(forgetPassword.getConformpassword())){
@@ -111,14 +110,5 @@ public class AuthController {
         }
         return new ResponseEntity<>("Password Reset SUCCESS", OK);
     }
-    @GetMapping("/pdf/generate")
-    public void generateCV(HttpServletResponse response,@RequestBody CVGenerator cvData) throws IOException {
-        response.setContentType("application/pdf");
-String headerKey="Content-Disposition";
-String headerValue="attachment; filename=GeneratedCV.pdf";
-response.setHeader(headerKey,headerValue);
-this.userService.export(response,cvData);
-    }
-
 
 }
