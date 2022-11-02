@@ -5,74 +5,50 @@ import com.OurInternfactory.Models.User;
 import com.OurInternfactory.Payloads.*;
 import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Security.JwtAuthRequest;
-import com.OurInternfactory.Security.JwtTokenHelper;
-import com.OurInternfactory.Services.EmailService;
+import com.OurInternfactory.Services.JWTTokenGenerator;
 import com.OurInternfactory.Services.OTPService;
 import com.OurInternfactory.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.Random;
 
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/auth/")
 public class AuthController {
-    private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
-    private final JwtTokenHelper jwtTokenHelper;
-    private final UserDetailsService userDetailsService;
-    private final EmailService emailService;
-    private final AuthenticationManager authenticationManager;
+    private static final long OTP_VALID_DURATION = 10 * 60 * 1000;
     private final UserRepo userRepo;
     private final UserService userService;
+    private final JWTTokenGenerator jwtTokenGenerator;
     private final OTPService otpService;
 
-    public AuthController(JwtTokenHelper jwtTokenHelper, UserDetailsService userDetailsService, EmailService emailService, AuthenticationManager authenticationManager, UserRepo userRepo, UserService userService, OTPService otpService) {
-        this.jwtTokenHelper = jwtTokenHelper;
-        this.userDetailsService = userDetailsService;
-        this.emailService = emailService;
-        this.authenticationManager = authenticationManager;
+    public AuthController(UserRepo userRepo, UserService userService, JWTTokenGenerator jwtTokenGenerator, OTPService otpService) {
         this.userRepo = userRepo;
         this.userService = userService;
+        this.jwtTokenGenerator = jwtTokenGenerator;
         this.otpService = otpService;
     }
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> createToken(@Valid @RequestBody JwtAuthRequest request) {
+        request.setUsername(request.getUsername().toLowerCase());
         User user = this.userRepo.findByEmail(request.getUsername()).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+request.getUsername(), 0));
         if(user.isActive()) {
-            this.authenticate(request.getUsername(), request.getPassword());
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(request.getUsername());
-            this.jwtTokenHelper.generateToken(userDetails);
-            String token = this.jwtTokenHelper.generateToken(userDetails);
-            JwtAuthResponse response = new JwtAuthResponse();
-            response.setToken(token);
+            System.out.println(request.getPassword() + "\n" +request.getUsername());
+            JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getUsername(), request.getPassword());
             return new ResponseEntity<>(response, OK);
         }
         else{
             throw new Apiexception("Please verify your email first");
         }
     }
-    private void authenticate(String usernane, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(usernane, password);
-        try{
-            this.authenticationManager.authenticate(authenticationToken);
-        }
-        catch (BadCredentialsException e) {
-            System.out.println("Invalid Details");
-            throw new Apiexception("Invalid Username or Password");
-        }
-    }
+
     //SignUP
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserDto userDto){
+        userDto.setEmail(userDto.getEmail().toLowerCase());
         if(!userService.emailExists(userDto.getEmail())) {
             //write code for send otp to email....
             this.userService.registerNewUser(userDto, otpService.OTPRequest(userDto.getEmail()));
@@ -84,6 +60,7 @@ public class AuthController {
     }
     @PostMapping("/forget")
     public ResponseEntity<String> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {
+        forgetEmail.setEmail(forgetEmail.getEmail().toLowerCase());
         if(userService.emailExists(forgetEmail.getEmail())){
             //write code for send otp to email....
             User user = this.userRepo.findByEmail(forgetEmail.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "email: "+forgetEmail.getEmail(), 0));
@@ -98,7 +75,8 @@ public class AuthController {
         return new ResponseEntity<>("OTP Sent Success", OK);
     }
     @PostMapping("/verifyotp")
-    public ResponseEntity<JwtAuthResponse> verifyOtp(@Valid @RequestBody OtpDto otpDto) {
+    public ResponseEntity<String> verifyOtp(@Valid @RequestBody OtpDto otpDto) {
+        otpDto.setEmail(otpDto.getEmail().toLowerCase());
         User userOTP = this.userRepo.findByEmail(otpDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+otpDto.getEmail(), 0));
         if(this.userService.isOTPValid(otpDto.getEmail()) && userOTP.getOtp()!=null) {
             if (userOTP.getOtp() == otpDto.getOne_time_password()) {
@@ -106,13 +84,7 @@ public class AuthController {
                 userOTP.setOtp(null);
                 userOTP.setOtpRequestedTime(null);
                 this.userRepo.save(userOTP);
-                this.authenticate(userOTP.getEmail(), userOTP.getPassword());
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userOTP.getEmail());
-                this.jwtTokenHelper.generateToken(userDetails);
-                String token = this.jwtTokenHelper.generateToken(userDetails);
-                JwtAuthResponse response = new JwtAuthResponse();
-                response.setToken(token);
-                return new ResponseEntity<>(response, OK);
+                return new ResponseEntity<>("OTP Successfully Verified", OK);
             } else {
                 throw new Apiexception("Invalid OTP!!");
             }
@@ -123,6 +95,7 @@ public class AuthController {
     }
     @PostMapping("/resetpass")
     public ResponseEntity<String> resetPass(@Valid @RequestBody ForgetPassword forgetPassword){
+        forgetPassword.setEmail(forgetPassword.getEmail().toLowerCase());
         User userRP = this.userRepo.findByEmail(forgetPassword.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+forgetPassword.getEmail(), 0));
         if(userRP.isActive()){
             if ((forgetPassword.getPassword()).equals(forgetPassword.getConformpassword())){

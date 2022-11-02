@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
+    private static final long OTP_VALID_DURATION = 10 * 60 * 1000;
     private final UserRepo userRepo;
 
     private final ModelMapper modelMapper;

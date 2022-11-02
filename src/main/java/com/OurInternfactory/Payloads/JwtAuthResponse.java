@@ -1,14 +1,8 @@
 package com.OurInternfactory.Payloads;
 
-import org.springframework.stereotype.Component;
+import lombok.Data;
 
-@Component
+@Data
 public class JwtAuthResponse {
     private String token;
-    public String getToken() {
-        return token;
-    }
-    public void setToken(String token) {
-        this.token = token;
-    }
 }
