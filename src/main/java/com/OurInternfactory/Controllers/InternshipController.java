@@ -39,4 +39,10 @@ public class InternshipController {
         InternshipsDto newInternship = this.internshipServices.createInternship(internshipsDto, categoryid);
         return new ResponseEntity<InternshipsDto>(newInternship, HttpStatus.CREATED);
     }
+    @PostMapping("/user/{userEmail}/internships/apply")
+    public ResponseEntity<ApiResponse> applyInternship(@PathVariable String userEmail, @RequestBody ApplyInternship applyInternship){
+        String message = this.internshipServices.applyForInternship(userEmail, applyInternship.getTitle());
+        ApiResponse apiResponse = new ApiResponse(message, true);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
+    }
 }
