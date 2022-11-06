@@ -20,4 +20,5 @@ public class OTPService {
         String to = email;
         this.emailService.sendEmail(subject, message, to);
         return otpCheck;
-    }}
+    }
+}
