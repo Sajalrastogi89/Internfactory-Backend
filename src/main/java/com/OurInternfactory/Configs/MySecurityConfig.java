@@ -34,22 +34,22 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-         http
-                 .headers().frameOptions().disable()
-                 .and()
-                 .csrf().disable()
-                 .authorizeHttpRequests()
-                 .antMatchers("/api/auth/**", "/h2-console/**", "/**")
-                 .permitAll()
-                 .anyRequest()
-                 .authenticated()
-                 .and()
-                 .exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint)
-                 .and()
-                 .sessionManagement()
-                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http
+                .headers().frameOptions().disable()
+                .and()
+                .csrf().disable()
+                .authorizeHttpRequests()
+                .antMatchers("/api/auth/**", "/h2-console/**", "/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(this.jwtAuthenticationEntryPoint)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-         http.addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 
