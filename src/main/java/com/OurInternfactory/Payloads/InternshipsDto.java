@@ -1,5 +1,7 @@
 package com.OurInternfactory.Payloads;
 
+import com.OurInternfactory.Models.Category;
+import com.OurInternfactory.Models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

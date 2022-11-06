@@ -34,7 +34,18 @@ public class User implements UserDetails{
     private Date otpRequestedTime;
     @Column(name = "active")
     private boolean active;
+    @Column(name = "gender")
+    private String gender;
+    @Column(name = "mobile")
+    private String phoneNumber;
+    @Column(name = "profilePhoto")
+    private String profilePhoto;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Internships> internshipsList = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_internships", joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "internship_id", referencedColumnName = "id"))
+    private Set<Internships> interships;
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user", referencedColumnName = "id"), inverseJoinColumns =  @JoinColumn(name = "role", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();

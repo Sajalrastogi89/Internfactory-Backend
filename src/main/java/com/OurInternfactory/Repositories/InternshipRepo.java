@@ -15,5 +15,6 @@ public interface InternshipRepo extends JpaRepository<Internships, Integer> {
 //    List<Internships> findByUser(User user);
     Page<Internships> findByCategory(Category category, Pageable pageable);
     Page<Internships> findByUser(User user, Pageable pageable);
-    List<Internships> findByTitleContainingIgnoreCase(String title);
+    Page<Internships> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    Internships findByTitle(String title);
 }

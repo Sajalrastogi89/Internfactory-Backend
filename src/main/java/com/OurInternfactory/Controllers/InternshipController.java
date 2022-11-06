@@ -32,7 +32,7 @@ public class InternshipController {
         this.internshipRepo = internshipRepo;
         this.fileServices = fileServices;
     }
-    //    create
+//    create
 //    @PreAuthorize("hasRole('HOST')")
     @PostMapping("/category/{categoryid}/internships")
     public ResponseEntity<InternshipsDto> createInternship(@RequestBody InternshipsDto internshipsDto, @PathVariable Integer categoryid){
@@ -45,11 +45,6 @@ public class InternshipController {
         ApiResponse apiResponse = new ApiResponse(message, true);
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 22c1dbc50f6c95dc0397b26372fce10769d11ea1
     @GetMapping("/user/{userid}/internships")
     public ResponseEntity<InternshipResponse> getInternshipsByUser(@PathVariable Integer userid,
                                                                    @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
@@ -66,7 +61,7 @@ public class InternshipController {
             @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
-    ){
+            ){
 
         InternshipResponse internshipResponse  = this.internshipServices.getAllInternships(pageNumber, pageSize, sortBy, sortDir);
         return new ResponseEntity<InternshipResponse>(internshipResponse, HttpStatus.OK);
@@ -115,10 +110,10 @@ public class InternshipController {
 
     @GetMapping("/internships/search/{keywords}")
     public  ResponseEntity<InternshipResponse> searchInternshipByTitle(@PathVariable("keywords") String keywords,
-                                                                       @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-                                                                       @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
-                                                                       @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-                                                                       @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
+                                                                        @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+                                                                        @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+                                                                        @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+                                                                        @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir
     ){
         InternshipResponse internshipResponse = this.internshipServices.searchInternships(keywords, pageNumber, pageSize, sortBy, sortDir);
         return new ResponseEntity<InternshipResponse>(internshipResponse, HttpStatus.OK);
@@ -132,8 +127,4 @@ public class InternshipController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource, response.getOutputStream());
     }
-<<<<<<< HEAD
->>>>>>> internships
-=======
->>>>>>> 22c1dbc50f6c95dc0397b26372fce10769d11ea1
 }

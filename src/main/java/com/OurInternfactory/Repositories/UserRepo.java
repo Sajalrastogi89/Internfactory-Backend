@@ -1,5 +1,6 @@
 package com.OurInternfactory.Repositories;
 
+import com.OurInternfactory.Models.Internships;
 import com.OurInternfactory.Models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

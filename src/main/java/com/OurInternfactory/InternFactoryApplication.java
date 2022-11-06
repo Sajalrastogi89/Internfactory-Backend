@@ -31,7 +31,6 @@ public class InternFactoryApplication implements CommandLineRunner{
     }
     @Override
     public void run(String... args){
-//		System.out.println(this.passwordEncoder.encode("sajalRastogi@123"));
         try{
             Role role1 = new Role();
             role1.setId(AppConstants.ADMIN_USER);
@@ -41,7 +40,11 @@ public class InternFactoryApplication implements CommandLineRunner{
             role2.setId(AppConstants.NORMAL_USER);
             role2.setName("NORMAL_USER");
 
-            List<Role> roles= List.of(role1, role2);
+            Role role3 = new Role();
+            role3.setId(AppConstants.HOST_USER);
+            role3.setName("HOST_USER");
+
+            List<Role> roles= List.of(role1, role2, role3);
             this.roleRepo.saveAll(roles);
         }
         catch (Exception e){
