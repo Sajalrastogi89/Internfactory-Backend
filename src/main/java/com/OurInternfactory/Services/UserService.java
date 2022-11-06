@@ -1,12 +1,8 @@
 package com.OurInternfactory.Services;
-import com.OurInternfactory.Payloads.CVGenerator;
+import com.OurInternfactory.Payloads.EditUserDto;
 import com.OurInternfactory.Payloads.ForgetPassword;
 import com.OurInternfactory.Payloads.UserDto;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import com.OurInternfactory.Payloads.ForgetPassword;
-import com.OurInternfactory.Payloads.UserDto;
+import com.OurInternfactory.Payloads.CategoryDTO;
 
 import java.util.List;
 
@@ -15,8 +11,7 @@ public interface UserService {
     void registerNewUser(UserDto user, int otp);
     UserDto createUser(UserDto user);
     UserDto updateUser(UserDto user, Integer userId);
-
-
+    String updateUserProfile(EditUserDto editUserDto);
     boolean isOTPValid(String email);
 
     UserDto getUserById(Integer userId);
@@ -24,5 +19,7 @@ public interface UserService {
     void DeleteUser(Integer userId);
     void updateUserPass(ForgetPassword password);
     boolean emailExists(String email);
-void export(HttpServletResponse response, CVGenerator cvData) throws IOException;
+    List<CategoryDTO> getAllCategory();
+    List<CategoryDTO> getAllTrendingCategory();
+    CategoryDTO AddData(CategoryDTO catDTO);
 }

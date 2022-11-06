@@ -46,7 +46,10 @@ public class InternshipController {
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 22c1dbc50f6c95dc0397b26372fce10769d11ea1
     @GetMapping("/user/{userid}/internships")
     public ResponseEntity<InternshipResponse> getInternshipsByUser(@PathVariable Integer userid,
                                                                    @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
@@ -129,5 +132,8 @@ public class InternshipController {
         response.setContentType(MediaType.IMAGE_JPEG_VALUE);
         StreamUtils.copy(resource, response.getOutputStream());
     }
+<<<<<<< HEAD
 >>>>>>> internships
+=======
+>>>>>>> 22c1dbc50f6c95dc0397b26372fce10769d11ea1
 }
