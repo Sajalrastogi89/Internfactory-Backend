@@ -54,6 +54,17 @@ public class InternshipController {
         String message = this.internshipServices.deleteSubmissionForm(submissionId);
         return new ResponseEntity<>(new ApiResponse(message, true), HttpStatus.OK);
     }
+
+    @PostMapping("/user/{userid}/internships")
+    public ResponseEntity<SubmissionResponse> getInternshipsByUser(@PathVariable Integer userid, @RequestBody PageParam pageParam){
+        SubmissionResponse internshipResponse  = this.internshipServices.getInternshipsByUser(userid, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
+        return new ResponseEntity<>(internshipResponse, HttpStatus.OK);
+    }
+    @PostMapping("/internships")
+    public ResponseEntity<InternshipResponse> getAllInternships(@RequestBody PageParam pageParam){
+
+        InternshipResponse internshipResponse  = this.internshipServices.getAllInternships(pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
+        return new ResponseEntity<>(internshipResponse, HttpStatus.OK);
     }
     @GetMapping("/internships/{internshipid}")
     public ResponseEntity<InternshipsDto> getiInternshipById(@PathVariable Integer internshipid){
@@ -84,5 +95,23 @@ public class InternshipController {
             return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(new FileDto(filename, "Image is Successfully Uploaded !!!"), HttpStatus.OK);
+    }
+
+    @PostMapping("/category/{categoryid}/allinternships")
+    public  ResponseEntity<InternshipResponse> getInternshipsByCategory(@PathVariable("categoryid") Integer categoryid, @RequestBody PageParam pageParam){
+        InternshipResponse internshipResponse = this.internshipServices.getInternshipsByCategory(categoryid, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
+        return new ResponseEntity<>(internshipResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/internships/search/{keywords}")
+    public  ResponseEntity<InternshipResponse> searchInternshipByTitle(@PathVariable("keywords") String keywords, @RequestBody PageParam pageParam){
+        InternshipResponse internshipResponse = this.internshipServices.searchInternships(keywords, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
+        return new ResponseEntity<>(internshipResponse, HttpStatus.OK);
+
+    }
+    @PostMapping("/internships/appliedUser/{internnshipId}")
+    public ResponseEntity<AppliedUserResponse> getAppliedUser(@PathVariable("internnshipId") Integer internnshipId, @RequestBody PageParam pageParam){
+        AppliedUserResponse appliedUserResponse = this.internshipServices.searchUserByInternship(internnshipId, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
+        return new ResponseEntity<>(appliedUserResponse, HttpStatus.OK);
     }
 }
