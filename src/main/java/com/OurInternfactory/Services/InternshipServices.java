@@ -1,15 +1,13 @@
 package com.OurInternfactory.Services;
 
-import com.OurInternfactory.Models.Internships;
-import com.OurInternfactory.Payloads.InternshipResponse;
-import com.OurInternfactory.Payloads.InternshipsDto;
-
-import java.util.List;
+import com.OurInternfactory.Payloads.*;
 
 public interface InternshipServices {
     InternshipsDto createInternship(InternshipsDto internshipsDto, Integer categoryId);
 
-    String applyForInternship(String email, String Title);
+    SubmissionDto applyForInternship(String Email, Integer internshipId, SubmissionDto submissionDto);
+    SubmissionDto getSubmissionForm(Integer submissionId);
+    String deleteSubmissionForm(Integer submissionId);
 
     InternshipsDto updateInternship(InternshipsDto internshipsDto, Integer internshipId);
 
@@ -21,8 +19,10 @@ public interface InternshipServices {
 
     InternshipResponse getInternshipsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
-    InternshipResponse getInternshipsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+    SubmissionResponse getInternshipsByUser(Integer userId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
     InternshipResponse searchInternships(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+
+    AppliedUserResponse searchUserByInternship(Integer internshipId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
     //Search Internships
 }
