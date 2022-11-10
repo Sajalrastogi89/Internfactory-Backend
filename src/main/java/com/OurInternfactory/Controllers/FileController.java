@@ -22,13 +22,13 @@ public class FileController {
     @Value("${project.image}")
     private String path;
 
-    public FileController(FileServices fileServices) {
+    public FileController(FileServices fileServices) throws IOException {
         this.fileServices = fileServices;
     }
 
     @PostMapping("/upload")
     public ResponseEntity<FileDto> fileUpload(
-        @RequestParam("image") MultipartFile image
+            @RequestParam("image") MultipartFile image
     ){
         String filename = null;
         try {

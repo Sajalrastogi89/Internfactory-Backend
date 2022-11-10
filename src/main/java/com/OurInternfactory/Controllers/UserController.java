@@ -71,13 +71,13 @@ public class UserController {
         ApiResponse apiResponse = new ApiResponse(message, true);
         return ResponseEntity.ok(apiResponse);
     }
-    @GetMapping("/getUserInfo")
-    public ResponseEntity<EditUserDto> getUserInfo(@RequestBody ForgetEmail forgetEmail) {
+    @PostMapping("/getUserInfo")
+    public ResponseEntity<GetProfileResponse> getUserInfo(@RequestBody ForgetEmail forgetEmail) {
         forgetEmail.setEmail(forgetEmail.getEmail().toLowerCase());
         String finalEmail = forgetEmail.getEmail();
         User user = this.userRepo.findByEmail(finalEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+ finalEmail, 0));
-        EditUserDto editUserDto = new EditUserDto(user.getEmail(), user.getFirstname(), user.getLastname(), user.getGender(), user.getEmail(), user.getPhoneNumber());
-        return new ResponseEntity<>(editUserDto, HttpStatus.OK);
+        GetProfileResponse editUserDto = new GetProfileResponse(user.getId(), user.getProfilePhoto(), user.getFirstname(), user.getLastname(), user.getGender(), user.getEmail(), user.getPhoneNumber());
+        return new ResponseEntity<GetProfileResponse>(editUserDto, HttpStatus.OK);
     }
     @PostMapping("/setprofilephoto/{userEmail}")
     public ResponseEntity<FileDto> settProfileImage(

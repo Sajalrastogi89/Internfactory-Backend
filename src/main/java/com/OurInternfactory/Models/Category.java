@@ -26,7 +26,6 @@ public class Category {
     private String imageName;
     @Column(name = "count")
     private int count;
-    @Column
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Internships> internshipsList = new ArrayList<>();
 }
