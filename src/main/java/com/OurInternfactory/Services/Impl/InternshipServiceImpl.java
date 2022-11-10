@@ -172,5 +172,22 @@ public class InternshipServiceImpl implements InternshipServices {
         List<Internships> allInternships = pageInternships.getContent();
         List<InternshipsDto> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipsDto.class)).collect(Collectors.toList());
         return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
+    }
 
+    @Override
+    public AppliedUserResponse searchUserByInternship(Integer internshipId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()->new ResourceNotFoundException("Internship", "internshipId", internshipId));
+        Sort sort = null;
+        if(sortDir.equalsIgnoreCase("asc")){
+            sort = Sort.by(sortBy).ascending();
+        }
+        else{
+            sort = Sort.by(sortBy).descending();
+        }
+        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
+        Page<User> pageUser = this.userRepo.findByInterships(internships, p);
+        List<User> allUsers = pageUser.getContent();
+        List<ApppliedUserDto> allUserDto = allUsers.stream().map((internshipe) -> this.modelMapper.map(internshipe, ApppliedUserDto.class)).collect(Collectors.toList());
+        return new AppliedUserResponse(allUserDto, pageUser.getNumber(), pageUser.getSize(), pageUser.getTotalPages(), pageUser.getTotalElements(), pageUser.isLast());
+    }
 }
