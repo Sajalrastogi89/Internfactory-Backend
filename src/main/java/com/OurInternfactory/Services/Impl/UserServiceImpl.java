@@ -3,17 +3,20 @@ package com.OurInternfactory.Services.Impl;
 import com.OurInternfactory.Configs.AppConstants;
 import com.OurInternfactory.Exceptions.ResourceNotFoundException;
 import com.OurInternfactory.Models.Category;
+import com.OurInternfactory.Models.Resume;
 import com.OurInternfactory.Models.Role;
 import com.OurInternfactory.Models.User;
 import com.OurInternfactory.Payloads.EditUserDto;
 import com.OurInternfactory.Payloads.ForgetPassword;
 import com.OurInternfactory.Payloads.UserDto;
 import com.OurInternfactory.Payloads.CategoryDTO;
+import com.OurInternfactory.Repositories.ResumeRepo;
 import com.OurInternfactory.Repositories.RoleRepo;
 import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Repositories.CategoryRepo;
 import com.OurInternfactory.Services.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,15 +37,17 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final ResumeRepo resumeRepo;
     private final RoleRepo roleRepo;
 
-    public UserServiceImpl(CategoryRepo catRepo, UserRepo userRepo, ModelMapper modelMapper, PasswordEncoder passwordEncoder, RoleRepo roleRepo, CategoryRepo categRepo) {
+    public UserServiceImpl(CategoryRepo catRepo, UserRepo userRepo, ModelMapper modelMapper, PasswordEncoder passwordEncoder, RoleRepo roleRepo, CategoryRepo categRepo, ResumeRepo resumeRepo) {
         this.catRepo = catRepo;
         this.userRepo = userRepo;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.roleRepo = roleRepo;
         this.categRepo = categRepo;
+        this.resumeRepo = resumeRepo;
     }
 
     @Override
@@ -52,9 +57,14 @@ public class UserServiceImpl implements UserService {
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         user.setOtp(otp);
         user.setActive(false);
+        user.setProfilePhoto("default.png");
         user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
         //roles
         Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
+        Resume resume = new Resume();
+        resume.setUser(user);
+        resumeRepo.save(resume);
+        user.setResume(resume);
         user.getRoles().add(role);
         this.userRepo.save(user);
     }

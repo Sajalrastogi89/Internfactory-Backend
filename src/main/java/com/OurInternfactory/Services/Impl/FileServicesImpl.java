@@ -26,7 +26,7 @@ public class FileServicesImpl implements FileServices {
         if(!newFile.exists()){
             newFile.mkdir();
         }
-        //file upload    i.e copying the file from the argument and save the Filepath
+        //file upload i.e. copying the file from the argument and save the Filepath
         Files.copy(file.getInputStream(), Paths.get(filepath));
         return newFileName;
     }

@@ -28,7 +28,7 @@ public class FileController {
 
     @PostMapping("/upload")
     public ResponseEntity<FileDto> fileUpload(
-            @RequestParam("image") MultipartFile image
+        @RequestParam("image") MultipartFile image
     ){
         String filename = null;
         try {

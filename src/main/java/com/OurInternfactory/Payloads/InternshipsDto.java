@@ -1,7 +1,5 @@
 package com.OurInternfactory.Payloads;
 
-import com.OurInternfactory.Models.Category;
-import com.OurInternfactory.Models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,11 +11,15 @@ import java.util.Date;
 public class InternshipsDto {
     private Integer id;
     private String title;
-    private String about;
-    private Date issuedDate;
-    private Date lastDate;
+    private String type;
     private String tenure;
     private String stipend;
+    private Date lastDate;
+    private String about;
+    private String skills;
+    private String who_can_apply;
+    private String perks;
     private String imageUrl;
+    private Date issuedDate;
     private CategoryDTO category;
 }

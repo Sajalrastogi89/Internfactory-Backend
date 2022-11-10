@@ -1,9 +1,15 @@
 package com.OurInternfactory.Payloads;
 
+import com.OurInternfactory.Models.Internships;
+import com.OurInternfactory.Models.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Getter @Setter
 @AllArgsConstructor

@@ -31,7 +31,7 @@ public class InternshipController {
         this.internshipRepo = internshipRepo;
         this.fileServices = fileServices;
     }
-    //    create
+//    create
 //    @PreAuthorize("hasRole('HOST')")
     @PostMapping("/category/{categoryid}/internships")
     public ResponseEntity<InternshipsDto> createInternship(@RequestBody InternshipsDto internshipsDto, @PathVariable Integer categoryid){

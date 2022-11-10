@@ -2,6 +2,7 @@ package com.OurInternfactory.Payloads;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class EditUserDto {
     @Email(message = "Email Address is not Valid!!")
     private String email;

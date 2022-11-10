@@ -1,5 +1,7 @@
 package com.OurInternfactory.Payloads;
 
+import com.OurInternfactory.Models.Resume;
+import com.OurInternfactory.Models.Submission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApppliedUserDto {
+public class ApppliedUserDto{
     private Integer id;
     private String firstname;
     private String lastname;
