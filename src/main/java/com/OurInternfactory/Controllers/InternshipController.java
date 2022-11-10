@@ -56,7 +56,7 @@ public class InternshipController {
     }
 
     @PostMapping("/user/{userid}/internships")
-    public ResponseEntity<SubmissionResponse> getInternshipsByUser(@PathVariable Integer userid){
+    public ResponseEntity<SubmissionResponse> getInternshipsByUser(@PathVariable Integer userid, @RequestBody PageParam pageParam){
         SubmissionResponse internshipResponse  = this.internshipServices.getInternshipsByUser(userid, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
         return new ResponseEntity<>(internshipResponse, HttpStatus.OK);
     }
@@ -98,19 +98,19 @@ public class InternshipController {
     }
 
     @PostMapping("/category/{categoryid}/allinternships")
-    public  ResponseEntity<InternshipResponse> getInternshipsByCategory(@PathVariable("categoryid") Integer categoryid){
+    public  ResponseEntity<InternshipResponse> getInternshipsByCategory(@PathVariable("categoryid") Integer categoryid, @RequestBody PageParam pageParam){
         InternshipResponse internshipResponse = this.internshipServices.getInternshipsByCategory(categoryid, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
         return new ResponseEntity<>(internshipResponse, HttpStatus.OK);
     }
 
     @PostMapping("/internships/search/{keywords}")
-    public  ResponseEntity<InternshipResponse> searchInternshipByTitle(@PathVariable("keywords") String keywords{
+    public  ResponseEntity<InternshipResponse> searchInternshipByTitle(@PathVariable("keywords") String keywords, @RequestBody PageParam pageParam){
         InternshipResponse internshipResponse = this.internshipServices.searchInternships(keywords, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
         return new ResponseEntity<>(internshipResponse, HttpStatus.OK);
 
     }
     @PostMapping("/internships/appliedUser/{internnshipId}")
-    public ResponseEntity<AppliedUserResponse> getAppliedUser(@PathVariable("internnshipId") Integer internnshipId){
+    public ResponseEntity<AppliedUserResponse> getAppliedUser(@PathVariable("internnshipId") Integer internnshipId, @RequestBody PageParam pageParam){
         AppliedUserResponse appliedUserResponse = this.internshipServices.searchUserByInternship(internnshipId, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
         return new ResponseEntity<>(appliedUserResponse, HttpStatus.OK);
     }
