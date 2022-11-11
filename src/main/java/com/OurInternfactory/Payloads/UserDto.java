@@ -14,7 +14,6 @@ import lombok.Setter;
 public class UserDto {
     private Integer id;
     @NotEmpty
-    @Size(min = 4, message = "First Name must be min of 4 character")
     private String firstname;
     private String lastname;
     @NotEmpty

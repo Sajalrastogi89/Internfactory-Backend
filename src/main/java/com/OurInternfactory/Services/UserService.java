@@ -9,6 +9,7 @@ import java.util.List;
 public interface UserService {
 
     void registerNewUser(UserDto user, int otp);
+    void registerNewHost(UserDto user, int otp);
     UserDto createUser(UserDto user);
     UserDto updateUser(UserDto user, Integer userId);
     String updateUserProfile(EditUserDto editUserDto);

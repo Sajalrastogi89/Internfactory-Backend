@@ -44,7 +44,7 @@ public class User implements UserDetails{
     private String profilePhoto;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "user_internships", joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "internship_id", referencedColumnName = "id"))
     private Set<Internships> interships;
     @JsonIgnore

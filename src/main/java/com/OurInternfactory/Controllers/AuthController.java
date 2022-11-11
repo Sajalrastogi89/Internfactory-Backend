@@ -60,6 +60,22 @@ public class AuthController {
         apiResponse.setMessage("OTP Sent Success on the entered Email");
         return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.CREATED);
     }
+
+    @PostMapping("/signupHost")
+    public ResponseEntity<ApiResponse> registerHost(@Valid @RequestBody UserDto userDto){
+        userDto.setEmail(userDto.getEmail().toLowerCase());
+        if(!userService.emailExists(userDto.getEmail())) {
+            //write code for send otp to email....
+            this.userService.registerNewHost(userDto, otpService.OTPRequest(userDto.getEmail()));
+        }
+        else{
+            throw new Apiexception("User already exist with the entered email id");
+        }
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setSuccess(true);
+        apiResponse.setMessage("OTP Sent Success on the entered Email");
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.CREATED);
+    }
     @PostMapping("/forget")
     public ResponseEntity<ApiResponse> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {
         forgetEmail.setEmail(forgetEmail.getEmail().toLowerCase());

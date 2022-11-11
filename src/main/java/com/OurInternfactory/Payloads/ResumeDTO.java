@@ -7,12 +7,14 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 
 @Getter@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResumeDTO {
     Integer id;
+    @NotEmpty
     private String fullName;
     private String education;
     private String internships;

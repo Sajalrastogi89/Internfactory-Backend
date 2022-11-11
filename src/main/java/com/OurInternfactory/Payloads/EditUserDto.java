@@ -24,6 +24,6 @@ public class EditUserDto {
     @NotEmpty
     @Email(message = "Email Address is not Valid!!")
     private String newemail;
-    @Pattern(regexp="(^$|[0-9]{10})")
+    @Pattern(regexp="(^$|[0-9]{10})", message = "Phone number must be 10 digit long")
     private String phoneNumber;
 }

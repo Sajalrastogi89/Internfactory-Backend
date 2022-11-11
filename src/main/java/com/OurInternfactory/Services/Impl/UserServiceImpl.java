@@ -69,6 +69,24 @@ public class UserServiceImpl implements UserService {
         this.userRepo.save(user);
     }
     @Override
+    public void registerNewHost(UserDto userDto, int otp) {
+        User user =this.modelMapper.map(userDto, User.class);
+        //encoded the password
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        user.setOtp(otp);
+        user.setActive(false);
+        user.setProfilePhoto("default.png");
+        user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
+        //roles
+        Role role = this.roleRepo.findById(AppConstants.HOST_USER).get();
+        Resume resume = new Resume();
+        resume.setUser(user);
+        resumeRepo.save(resume);
+        user.setResume(resume);
+        user.getRoles().add(role);
+        this.userRepo.save(user);
+    }
+    @Override
     public UserDto createUser(UserDto userDto) {
         User user  = this.DtoToUser(userDto);
         User savedUser = this.userRepo.save(user);
@@ -130,6 +148,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void DeleteUser(Integer userId) {
         User user = this.userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User", "ID", userId));
+        user.getRoles().clear();
         this.userRepo.delete(user);
     }
     @Override

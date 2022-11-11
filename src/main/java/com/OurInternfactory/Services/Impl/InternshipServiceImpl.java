@@ -1,5 +1,6 @@
 package com.OurInternfactory.Services.Impl;
 
+import com.OurInternfactory.Exceptions.Apiexception;
 import com.OurInternfactory.Exceptions.ResourceNotFoundException;
 import com.OurInternfactory.Models.Category;
 import com.OurInternfactory.Models.Internships;
@@ -18,6 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,19 +57,30 @@ public class InternshipServiceImpl implements InternshipServices {
     }
     @Override
     public SubmissionDto applyForInternship(String Email, Integer internshipId, SubmissionDto submissionDto){
-        User user = this.userRepo.findByEmail(Email).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+Email, 0));
-        Internships internships= this.internshipRepo.findById(internshipId).orElseThrow(()->new ResourceNotFoundException("Internship", "InternshipId", internshipId));
-        Submission submission = this.modelMapper.map(submissionDto, Submission.class);
-        user.getInterships().add(internships);
-        user.getSubmission().add(submission);
-        internships.getUser().add(user);
-        internships.getSubmissions().add(submission);
-        submission.setInternships(internships);
-        submission.setUser(user);
-        this.userRepo.save(user);
-        this.internshipRepo.save(internships);
-        this.submissionRepo.save(submission);
-        return this.modelMapper.map(submission, SubmissionDto.class);
+            User user = this.userRepo.findByEmail(Email).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+Email, 0));
+            Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()->new ResourceNotFoundException("Internship", "InternshipId", internshipId));
+        long currentTimeInMillis = System.currentTimeMillis();
+        long otpRequestedTimeInMillis = internships.getLastDate().getTime();
+        if(otpRequestedTimeInMillis > currentTimeInMillis) {
+            Submission submission = this.modelMapper.map(submissionDto, Submission.class);
+            Category category = internships.getCategory();
+            category.setCount(category.getCount() + 1);
+            user.getInterships().add(internships);
+            user.getSubmission().add(submission);
+            internships.getUser().add(user);
+            internships.getSubmissions().add(submission);
+            submission.setInternships(internships);
+            submission.setUser(user);
+            this.categoryRepo.save(category);
+            this.userRepo.save(user);
+            this.internshipRepo.save(internships);
+            this.submissionRepo.save(submission);
+
+            return this.modelMapper.map(submission, SubmissionDto.class);
+        }
+        else{
+            throw new Apiexception("The last date to apply internships has been passed out!!!!\nPlease apply any other internship!!!");
+        }
     }
 
     @Override
@@ -76,6 +92,12 @@ public class InternshipServiceImpl implements InternshipServices {
     @Override
     public String deleteSubmissionForm(Integer submissionId) {
         Submission submission = this.submissionRepo.findById(submissionId).orElseThrow(() -> new ResourceNotFoundException("Submission", "submissionId", submissionId));
+        Internships internships = this.internshipRepo.findBySubmissions(submission);
+        Category category = internships.getCategory();
+        if(category.getCount() != 0) {
+            category.setCount(category.getCount() - 1);
+            this.categoryRepo.save(category);
+        }
         this.submissionRepo.delete(submission);
         return "Your submission successfully deleted";
     }
