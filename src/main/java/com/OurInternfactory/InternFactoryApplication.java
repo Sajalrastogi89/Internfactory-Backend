@@ -33,16 +33,16 @@ public class InternFactoryApplication implements CommandLineRunner{
     public void run(String... args){
         try{
             Role role1 = new Role();
-            role1.setId(AppConstants.ADMIN_USER);
-            role1.setName("ADMIN_USER");
+            role1.setId(AppConstants.ROLE_ADMIN);
+            role1.setName("ROLE_ADMIN");
 
             Role role2 = new Role();
-            role2.setId(AppConstants.NORMAL_USER);
-            role2.setName("NORMAL_USER");
+            role2.setId(AppConstants.ROLE_NORMAL);
+            role2.setName("ROLE_NORMAL");
 
             Role role3 = new Role();
-            role3.setId(AppConstants.HOST_USER);
-            role3.setName("HOST_USER");
+            role3.setId(AppConstants.ROLE_HOST);
+            role3.setName("ROLE_HOST");
 
             List<Role> roles= List.of(role1, role2, role3);
             this.roleRepo.saveAll(roles);

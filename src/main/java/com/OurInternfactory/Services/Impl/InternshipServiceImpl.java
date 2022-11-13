@@ -93,11 +93,18 @@ public class InternshipServiceImpl implements InternshipServices {
     public String deleteSubmissionForm(Integer submissionId) {
         Submission submission = this.submissionRepo.findById(submissionId).orElseThrow(() -> new ResourceNotFoundException("Submission", "submissionId", submissionId));
         Internships internships = this.internshipRepo.findBySubmissions(submission);
+        User user = submission.getUser();
+        user.getInterships().remove(internships);
+        user.getSubmission().remove(submission);
+        internships.getUser().remove(user);
+        internships.getSubmissions().remove(submission);
         Category category = internships.getCategory();
         if(category.getCount() != 0) {
             category.setCount(category.getCount() - 1);
             this.categoryRepo.save(category);
         }
+        this.userRepo.save(user);
+        this.internshipRepo.save(internships);
         this.submissionRepo.delete(submission);
         return "Your submission successfully deleted";
     }

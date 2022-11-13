@@ -125,15 +125,15 @@ public class InternshipController {
         if (image.getContentType().equals("image/png")
                 || image.getContentType().equals("image/jpg")
                 || image.getContentType().equals("image/jpeg")) {
-            try {
-                filename = this.fileServices.uploadImage(path, image);
-                internships.setImageUrl(filename);
-                this.internshipRepo.save(internships);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            return new ResponseEntity<>(new FileDto(filename, "Image is Successfully Uploaded !!!"), HttpStatus.OK);
+        try {
+            filename = this.fileServices.uploadImage(path, image);
+            internships.setImageUrl(filename);
+            this.internshipRepo.save(internships);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(new FileDto(filename, "Image is Successfully Uploaded !!!"), HttpStatus.OK);
         }
         else{
             return new ResponseEntity<>(new FileDto(filename, "File is not of image type(JPEG/ JPG or PNG)!!!"), HttpStatus.BAD_REQUEST);

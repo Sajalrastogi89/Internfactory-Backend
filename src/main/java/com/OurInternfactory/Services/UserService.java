@@ -22,5 +22,5 @@ public interface UserService {
     boolean emailExists(String email);
     List<CategoryDTO> getAllCategory();
     List<CategoryDTO> getAllTrendingCategory();
-    CategoryDTO AddData(CategoryDTO catDTO);
+
 }

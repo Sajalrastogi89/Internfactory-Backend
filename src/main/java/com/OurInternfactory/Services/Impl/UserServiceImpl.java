@@ -16,7 +16,6 @@ import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Repositories.CategoryRepo;
 import com.OurInternfactory.Services.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -59,8 +58,7 @@ public class UserServiceImpl implements UserService {
         user.setActive(false);
         user.setProfilePhoto("default.png");
         user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
-        //roles
-        Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
+        Role role = this.roleRepo.findById(AppConstants.ROLE_NORMAL).get();
         Resume resume = new Resume();
         resume.setUser(user);
         resumeRepo.save(resume);
@@ -78,7 +76,7 @@ public class UserServiceImpl implements UserService {
         user.setProfilePhoto("default.png");
         user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
         //roles
-        Role role = this.roleRepo.findById(AppConstants.HOST_USER).get();
+        Role role = this.roleRepo.findById(AppConstants.ROLE_HOST).get();
         Resume resume = new Resume();
         resume.setUser(user);
         resumeRepo.save(resume);
@@ -174,13 +172,6 @@ public class UserServiceImpl implements UserService {
         List<Category> cat = this.categRepo.findAll(Sort.by(Sort.Direction.DESC,"count"));
         return cat.stream().map(this::CategoryToDto).collect(Collectors.toList());
 
-    }
-
-    @Override
-    public CategoryDTO AddData(CategoryDTO catDTO) {
-        Category category1  = this.modelMapper.map(catDTO, Category.class);
-        Category savedCategory = this.catRepo.save(category1);
-        return this.modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
     public User DtoToUser(UserDto userdto) {

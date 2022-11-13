@@ -103,7 +103,7 @@ public class UserController {
     public ResponseEntity<FileDto> settProfileImage(
             @RequestParam("image") MultipartFile image, @PathVariable String userEmail
     ) {
-        String filename = null;
+            String filename = null;
         if (image.getContentType().equals("image/png")
                 || image.getContentType().equals("image/jpg")
                 || image.getContentType().equals("image/jpeg")) {
@@ -119,7 +119,7 @@ public class UserController {
             return new ResponseEntity<>(new FileDto(filename, "Image is Successfully Uploaded !!!"), HttpStatus.OK);
         }
         else{
-            return new ResponseEntity<>(new FileDto(filename, "File is not of image type(JPEG/ JPG or PNG)!!!"), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new FileDto(filename, "File is not of image type(JPEG/ JPG or PNG)!!!"), HttpStatus.BAD_REQUEST);
         }
     }
 }
@@ -127,7 +127,7 @@ public class UserController {
 
 
 
-//    To view the profile photo
+    //    To view the profile photo
 //    @GetMapping(value = "/getprofilephoto", produces = MediaType.IMAGE_JPEG_VALUE)
 //    public void getProfileImage(@RequestBody ForgetEmail forgetEmail, HttpServletResponse response) throws IOException {
 //        User user = this.userRepo.findByEmail(forgetEmail.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+forgetEmail.getEmail(), 0));

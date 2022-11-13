@@ -36,7 +36,7 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
                  .and()
                  .csrf().disable()
                  .authorizeHttpRequests()
-                 .antMatchers("/api/auth/**", "/h2-console/**", "/file/**")
+                 .antMatchers("/api/auth/**", "/h2-console/**", "/file/**", "/api/internships/search/", "/api/internships", "/api/category/**", "/api/getCategory", "/api/getTrending")
                  .permitAll()
                  .anyRequest()
                  .authenticated()
