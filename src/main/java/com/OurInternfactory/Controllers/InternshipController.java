@@ -114,21 +114,35 @@ public class InternshipController {
         return new ResponseEntity<>(updatedInternshipDto, HttpStatus.OK);
     }
 
+
+
+    //Added the photo to the internship
+    @PreAuthorize("hasAnyRole('HOST', 'ADMIN')")
     @PostMapping("/internships/{internshipId}/setimage")
     public ResponseEntity<FileDto> setIntershipImage(@RequestParam("image") MultipartFile image, @PathVariable Integer internshipId){
         Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()-> new ResourceNotFoundException("Internship", "Intership Id", internshipId));
         String filename = null;
-        try {
-            filename = this.fileServices.uploadImage(path, image);
-            internships.setImageUrl(filename);
-            this.internshipRepo.save(internships);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
+        if (image.getContentType().equals("image/png")
+                || image.getContentType().equals("image/jpg")
+                || image.getContentType().equals("image/jpeg")) {
+            try {
+                filename = this.fileServices.uploadImage(path, image);
+                internships.setImageUrl(filename);
+                this.internshipRepo.save(internships);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(new FileDto(filename, "Image is Successfully Uploaded !!!"), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new FileDto(filename, "Image is Successfully Uploaded !!!"), HttpStatus.OK);
+        else{
+            return new ResponseEntity<>(new FileDto(filename, "File is not of image type(JPEG/ JPG or PNG)!!!"), HttpStatus.BAD_REQUEST);
+        }
     }
 
+
+
+    //Get a list of all the internship  in a particular category
     @PostMapping("/category/{categoryid}/allinternships")
     public  ResponseEntity<InternshipResponse> getInternshipsByCategory(@PathVariable("categoryid") Integer categoryid, @RequestBody PageParam pageParam){
         InternshipResponse internshipResponse = this.internshipServices.getInternshipsByCategory(categoryid, pageParam.getPageNumber(), pageParam.getPageSize(), pageParam.getSortBy(), pageParam.getSortDir());
