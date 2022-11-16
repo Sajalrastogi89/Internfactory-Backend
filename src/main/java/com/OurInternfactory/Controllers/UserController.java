@@ -124,9 +124,6 @@ public class UserController {
     }
 }
 
-
-
-
     //    To view the profile photo
 //    @GetMapping(value = "/getprofilephoto", produces = MediaType.IMAGE_JPEG_VALUE)
 //    public void getProfileImage(@RequestBody ForgetEmail forgetEmail, HttpServletResponse response) throws IOException {
