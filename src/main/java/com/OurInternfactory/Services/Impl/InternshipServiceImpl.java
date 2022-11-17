@@ -12,6 +12,7 @@ import com.OurInternfactory.Repositories.InternshipRepo;
 import com.OurInternfactory.Repositories.SubmissionRepo;
 import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Services.InternshipServices;
+import com.OurInternfactory.Services.SubmissionSucessService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,10 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,24 +31,41 @@ public class InternshipServiceImpl implements InternshipServices {
     private final UserRepo userRepo;
 
     private final CategoryRepo categoryRepo;
+    private final SubmissionSucessService submissionSucessService;
     private final SubmissionRepo submissionRepo;
 
-    public InternshipServiceImpl(InternshipRepo internshipRepo, ModelMapper modelMapper, UserRepo userRepo, CategoryRepo categoryRepo, SubmissionRepo submissionRepo) {
+    public String getFirstNStrings(String str, int n) {
+        String[] sArr = str.split(" ");
+        String firstStrs = "";
+        for(int i = 0; i < n; i++)
+            firstStrs += sArr[i] + " ";
+        return firstStrs.trim();
+    }
+
+    public InternshipServiceImpl(InternshipRepo internshipRepo, ModelMapper modelMapper, UserRepo userRepo, CategoryRepo categoryRepo, SubmissionRepo submissionRepo, SubmissionSucessService submissionSucessService) {
         this.internshipRepo = internshipRepo;
         this.modelMapper = modelMapper;
         this.userRepo = userRepo;
         this.categoryRepo = categoryRepo;
         this.submissionRepo = submissionRepo;
+        this.submissionSucessService = submissionSucessService;
     }
 
     @Override
-    public InternshipsDto createInternship(InternshipsDto internshipsDto, Integer categoryId) {
+    public InternshipsDto createInternship(InternshipAssessment internshipAssessment, Integer categoryId, String Email) {
         Category category = this.categoryRepo.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException("Category", "CategoryID", categoryId));
-        Internships internships = this.modelMapper.map(internshipsDto, Internships.class);
-        internships.setImageUrl("default.png");
+        User user = this.userRepo.findByEmail(Email).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+Email, 0));
+        Internships internships = this.modelMapper.map(internshipAssessment.getInternshipsDto(), Internships.class);
+        internships.setDisplayName(getFirstNStrings(internships.getTitle(), 3));
+        internships.setProvider(user.getFirstname());
+        internships.setImageUrl(user.getProfilePhoto());
         internships.setIssuedDate(new Date());
         internships.setCategory(category);
         category.getInternshipsList().add(internships);
+        Submission createSubmission = new Submission();
+        createSubmission.setQuestions(internshipAssessment.getQuestions());
+//        this.submissionRepo.save(createSubmission);
+        internships.submissionModel = createSubmission;
         Internships newInternship = this.internshipRepo.save(internships);
         return this.modelMapper.map(newInternship, InternshipsDto.class);
     }
@@ -75,7 +89,7 @@ public class InternshipServiceImpl implements InternshipServices {
             this.userRepo.save(user);
             this.internshipRepo.save(internships);
             this.submissionRepo.save(submission);
-
+            this.submissionSucessService.applicationMessage(Email, internships.getTitle());
             return this.modelMapper.map(submission, SubmissionDto.class);
         }
         else{
@@ -142,7 +156,7 @@ public class InternshipServiceImpl implements InternshipServices {
         Pageable p = PageRequest.of(pageNumber, pageSize, sort);
         Page<Internships> pageInternships = this.internshipRepo.findAll(p);
         List<Internships> allInternships = pageInternships.getContent();
-        List<InternshipsDto> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipsDto.class)).collect(Collectors.toList());
+        List<InternshipDisplayOnly> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipDisplayOnly.class)).collect(Collectors.toList());
 
         return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
     }
@@ -166,7 +180,7 @@ public class InternshipServiceImpl implements InternshipServices {
         Pageable p = PageRequest.of(pageNumber, pageSize, sort);
         Page<Internships> pageInternships = this.internshipRepo.findByCategory(category, p);//.findByCategory(category);
         List<Internships> allInternships = pageInternships.getContent();
-        List<InternshipsDto> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipsDto.class)).collect(Collectors.toList());
+        List<InternshipDisplayOnly> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipDisplayOnly.class)).collect(Collectors.toList());
         return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
     }
 
@@ -199,7 +213,7 @@ public class InternshipServiceImpl implements InternshipServices {
         Pageable p = PageRequest.of(pageNumber, pageSize, sort);
         Page<Internships> pageInternships = this.internshipRepo.findByTitleContainingIgnoreCase(keyword, p);
         List<Internships> allInternships = pageInternships.getContent();
-        List<InternshipsDto> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipsDto.class)).collect(Collectors.toList());
+        List<InternshipDisplayOnly> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipDisplayOnly.class)).collect(Collectors.toList());
         return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
     }
 

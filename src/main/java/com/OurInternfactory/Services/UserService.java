@@ -1,15 +1,12 @@
 package com.OurInternfactory.Services;
-import com.OurInternfactory.Payloads.EditUserDto;
-import com.OurInternfactory.Payloads.ForgetPassword;
-import com.OurInternfactory.Payloads.UserDto;
-import com.OurInternfactory.Payloads.CategoryDTO;
+import com.OurInternfactory.Payloads.*;
 
 import java.util.List;
 
 public interface UserService {
 
     void registerNewUser(UserDto user, int otp);
-    void registerNewHost(UserDto user, int otp);
+    void registerNewHost(RegisterHost user, int otp);
     UserDto createUser(UserDto user);
     UserDto updateUser(UserDto user, Integer userId);
     String updateUserProfile(EditUserDto editUserDto);

@@ -42,7 +42,7 @@ public class User implements UserDetails{
     private String phoneNumber;
     @Column(name = "profilePhoto")
     private String profilePhoto;
-
+    private Boolean twoStepVerification;
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(name = "user_internships", joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "internship_id", referencedColumnName = "id"))

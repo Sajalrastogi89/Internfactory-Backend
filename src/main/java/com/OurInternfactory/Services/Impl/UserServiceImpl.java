@@ -6,14 +6,11 @@ import com.OurInternfactory.Models.Category;
 import com.OurInternfactory.Models.Resume;
 import com.OurInternfactory.Models.Role;
 import com.OurInternfactory.Models.User;
-import com.OurInternfactory.Payloads.EditUserDto;
-import com.OurInternfactory.Payloads.ForgetPassword;
-import com.OurInternfactory.Payloads.UserDto;
-import com.OurInternfactory.Payloads.CategoryDTO;
+import com.OurInternfactory.Payloads.*;
+import com.OurInternfactory.Repositories.CategoryRepo;
 import com.OurInternfactory.Repositories.ResumeRepo;
 import com.OurInternfactory.Repositories.RoleRepo;
 import com.OurInternfactory.Repositories.UserRepo;
-import com.OurInternfactory.Repositories.CategoryRepo;
 import com.OurInternfactory.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
@@ -67,20 +64,22 @@ public class UserServiceImpl implements UserService {
         this.userRepo.save(user);
     }
     @Override
-    public void registerNewHost(UserDto userDto, int otp) {
-        User user =this.modelMapper.map(userDto, User.class);
+    public void registerNewHost(RegisterHost userDto, int otp){
+        User user = new User();
+        user.setFirstname(userDto.getCompanyEmail().substring(0, userDto.getCompanyEmail().indexOf("@")));
+        user.setEmail(userDto.getCompanyEmail());
+        user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
         //encoded the password
-        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         user.setOtp(otp);
         user.setActive(false);
         user.setProfilePhoto("default.png");
         user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
         //roles
         Role role = this.roleRepo.findById(AppConstants.ROLE_HOST).get();
-        Resume resume = new Resume();
-        resume.setUser(user);
-        resumeRepo.save(resume);
-        user.setResume(resume);
+//        Resume resume = new Resume();
+//        resume.setUser(user);
+//        resumeRepo.save(resume);
+//        user.setResume(resume);
         user.getRoles().add(role);
         this.userRepo.save(user);
     }

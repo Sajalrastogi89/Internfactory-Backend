@@ -1,5 +1,6 @@
 package com.OurInternfactory.Payloads;
 
+import com.OurInternfactory.Models.QuestionModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubmissionResponse {
-    private List<SubmissionDto> content;
-    private int pageNumber;
-    private int pageSize;
-    private int totalPage;
-    private long totalElements;
-    private boolean lastPage;
+public class InternshipAssessment {
+    InternshipsDto internshipsDto;
+    List<QuestionModel> questions;
 }

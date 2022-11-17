@@ -1,7 +1,5 @@
 package com.OurInternfactory.Payloads;
 
-import com.OurInternfactory.Models.Resume;
-import com.OurInternfactory.Models.Submission;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

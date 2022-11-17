@@ -11,11 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubmissionResponse {
-    private List<SubmissionDto> content;
-    private int pageNumber;
-    private int pageSize;
-    private int totalPage;
-    private long totalElements;
-    private boolean lastPage;
+public class SubmissionModelDto {
+    private Integer id;
+    private List<Question> questions;
 }
