@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter@Setter@AllArgsConstructor@NoArgsConstructor
 public class InternshipResponse {
-    private List<InternshipsDto> content;
+    private List<InternshipDisplayOnly> content;
     private int pageNumber;
     private int pageSize;
     private int totalPage;
