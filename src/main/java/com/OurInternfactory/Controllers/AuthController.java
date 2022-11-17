@@ -45,7 +45,7 @@ public class AuthController {
 
     // User as well as the host login API and          -------------------------/TOKEN GENERATOR/-----------------------
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> createToken(@Valid @RequestBody JwtAuthRequest request) {
+    public ResponseEntity<?> createToken(@Valid @RequestBody JwtAuthRequest request) {
         request.setEmail(request.getEmail().trim().toLowerCase());
         User user = this.userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+request.getEmail(), 0));
         if(user.isActive()) {
@@ -53,7 +53,8 @@ public class AuthController {
             return new ResponseEntity<>(response, OK);
         }
         else{
-            throw new Apiexception("Please verify your email first");
+            ApiResponse apiResponse34 = new ApiResponse("Please verify your email first", false);
+            return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -98,18 +99,35 @@ public class AuthController {
             return sendOTP(new ForgetEmail(userDto.getEmail()));
         }
     }
+    private ResponseEntity<?> getResponseEntityHOST(@RequestBody @Valid RegisterHost userDto, int roleHost, Integer roleNormal) {
+        User user = this.userRepo.findByEmail(userDto.getCompanyEmail()).orElseThrow(()->new ResourceNotFoundException("User", "Email: "+userDto.getCompanyEmail(), 0));
+        if(user.isActive()){
+            ApiResponse apiResponse34 = new ApiResponse("User already exist with the entered email id", false);
+            return new ResponseEntity<>(apiResponse34, HttpStatus.CONFLICT);
+        }
+        else{
+            user.setFirstname(userDto.getCompanyEmail().substring(0, userDto.getCompanyEmail().indexOf("@")));
+            user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
+            Role oldRole = this.roleRepo.findById(roleHost).get();
+            if(user.getRoles().contains(oldRole)){
+                Role newRole = this.roleRepo.findById(roleNormal).get();
+                user.getRoles().add(newRole);
+            }
+            this.userRepo.save(user);
+            return sendOTP(new ForgetEmail(userDto.getCompanyEmail()));
+        }
+    }
 
 
     //Signup API for Host
     @PostMapping("/signupHost")
-    public ResponseEntity<?> registerHost(@Valid @RequestBody UserDto userDto) {
-        userDto.setFirstname(userDto.getFirstname().trim());
-        userDto.setLastname(userDto.getLastname().trim());
-        userDto.setEmail(userDto.getEmail().trim().toLowerCase());
-        if (userService.emailExists(userDto.getEmail())) {
-            return getResponseEntity(userDto, AppConstants.ROLE_NORMAL, AppConstants.ROLE_HOST);
-        } else {
-            this.userService.registerNewHost(userDto, otpService.OTPRequest(userDto.getEmail()));
+    public ResponseEntity<?> registerHost(@Valid @RequestBody RegisterHost registerNewHost) {
+        registerNewHost.setCompanyEmail(registerNewHost.getCompanyEmail().trim().toLowerCase());
+        if (userService.emailExists(registerNewHost.getCompanyEmail())){
+            return getResponseEntityHOST(registerNewHost, AppConstants.ROLE_NORMAL, AppConstants.ROLE_HOST);
+        }
+        else {
+            this.userService.registerNewHost(registerNewHost, otpService.OTPRequest(registerNewHost.getCompanyEmail()));
             ApiResponse apiResponse = new ApiResponse();
             apiResponse.setSuccess(true);
             apiResponse.setMessage("OTP Sent Success on the entered Email");
