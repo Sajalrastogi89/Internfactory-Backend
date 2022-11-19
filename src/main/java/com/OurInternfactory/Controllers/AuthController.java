@@ -48,13 +48,23 @@ public class AuthController {
     public ResponseEntity<?> createToken(@Valid @RequestBody JwtAuthRequest request) {
         request.setEmail(request.getEmail().trim().toLowerCase());
         User user = this.userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+request.getEmail(), 0));
-        if(user.isActive()) {
-            JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
-            return new ResponseEntity<>(response, OK);
+        if(!user.getTwoStepVerification() || user.isActiveTwoStep()){
+            user.setTwoStepVerification(false);
+            this.userRepo.save(user);
+            if (user.isActive()){
+                JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
+                return new ResponseEntity<>(response, OK);
+            } else {
+                ApiResponse apiResponse34 = new ApiResponse("Please verify your email first", false);
+                return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
+            }
         }
         else{
-            ApiResponse apiResponse34 = new ApiResponse("Please verify your email first", false);
-            return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
+            /// code to send the OTO on mobile number;
+            user.setOtp(otpService.OTPRequestMobile(user.getPhoneNumber()));
+            user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
+            this.userRepo.save(user);
+            return new ResponseEntity<>(new ApiResponse("OTP has been successfully sent on the registered mobile number!!", true), HttpStatus.CONTINUE);
         }
     }
 
