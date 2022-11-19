@@ -166,6 +166,9 @@ public class AuthController {
         }
     }
 
+
+
+
     //Forget Password and otp generator API
     @PostMapping("/forget")
     public ResponseEntity<?> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {

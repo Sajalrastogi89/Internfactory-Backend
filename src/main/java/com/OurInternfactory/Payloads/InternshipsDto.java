@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
 import java.util.Date;
 
 @Getter@Setter@AllArgsConstructor@NoArgsConstructor

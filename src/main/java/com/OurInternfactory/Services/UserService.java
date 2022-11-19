@@ -20,4 +20,5 @@ public interface UserService {
     List<CategoryDTO> getAllCategory();
     List<CategoryDTO> getAllTrendingCategory();
 
+    List<InternshipsDto> getAllTrendingInternship();
 }

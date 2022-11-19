@@ -36,6 +36,8 @@ public class User implements UserDetails{
     private Date otpRequestedTime;
     @Column(name = "active")
     private boolean active;
+    @Column(name = "activeTwoStep")
+    private boolean activeTwoStep;
     @Column(name = "gender")
     private String gender;
     @Column(name = "mobile")

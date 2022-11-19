@@ -14,6 +14,8 @@ import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Services.InternshipServices;
 import com.OurInternfactory.Services.SubmissionSucessService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.AccessType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +60,7 @@ public class InternshipServiceImpl implements InternshipServices {
         Internships internships = this.modelMapper.map(internshipAssessment.getInternshipsDto(), Internships.class);
         internships.setDisplayName(getFirstNStrings(internships.getTitle(), 3));
         internships.setProvider(user.getFirstname());
+        internships.setActive(true);
         internships.setImageUrl(user.getProfilePhoto());
         internships.setIssuedDate(new Date());
         internships.setCategory(category);
