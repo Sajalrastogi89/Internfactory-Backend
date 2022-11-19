@@ -48,13 +48,23 @@ public class AuthController {
     public ResponseEntity<?> createToken(@Valid @RequestBody JwtAuthRequest request) {
         request.setEmail(request.getEmail().trim().toLowerCase());
         User user = this.userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+request.getEmail(), 0));
-        if(user.isActive()) {
-            JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
-            return new ResponseEntity<>(response, OK);
+        if(!user.getTwoStepVerification() || user.isActiveTwoStep()){
+            user.setTwoStepVerification(false);
+            this.userRepo.save(user);
+            if (user.isActive()){
+                JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
+                return new ResponseEntity<>(response, OK);
+            } else {
+                ApiResponse apiResponse34 = new ApiResponse("Please verify your email first", false);
+                return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
+            }
         }
         else{
-            ApiResponse apiResponse34 = new ApiResponse("Please verify your email first", false);
-            return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
+            /// code to send the OTO on mobile number;
+            user.setOtp(otpService.OTPRequestMobile(user.getPhoneNumber()));
+            user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
+            this.userRepo.save(user);
+            return new ResponseEntity<>(new ApiResponse("OTP has been successfully sent on the registered mobile number!!", true), HttpStatus.CONTINUE);
         }
     }
 
@@ -139,6 +149,25 @@ public class AuthController {
 
 
 
+     @PutMapping("/user/{userEmail}/twoStepEnable")
+    public ResponseEntity<?> EnableTwoStep(@PathVariable String userEmail){
+        User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+userEmail, 0));
+        if(user.getPhoneNumber() != null) {
+            if (user.getTwoStepVerification()) {
+                user.setTwoStepVerification(false);
+                this.userRepo.save(user);
+                return new ResponseEntity<>(new ApiResponse("Two step verification has been disabled", true), HttpStatus.OK);
+            } else {
+                user.setTwoStepVerification(true);
+                this.userRepo.save(user);
+                return new ResponseEntity<>(new ApiResponse("Two step verification has been enabled", true), HttpStatus.OK);
+            }
+        }
+        else{
+            return new ResponseEntity<>(new ApiResponse("Please complete the user profile first!", true), HttpStatus.BAD_REQUEST);
+        }
+    }
+    
     //Forget Password and otp generator API
     @PostMapping("/forget")
     public ResponseEntity<?> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {
@@ -173,6 +202,7 @@ public class AuthController {
         if(this.userService.isOTPValid(otpDto.getEmail()) && userOTP.getOtp()!=null) {
             if (userOTP.getOtp() == otpDto.getOne_time_password()) {
                 userOTP.setActive(true);
+                userOTP.setActiveTwoStep(true);
                 userOTP.setOtp(null);
                 userOTP.setOtpRequestedTime(null);
                 this.userRepo.save(userOTP);
