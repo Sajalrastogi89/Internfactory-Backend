@@ -202,6 +202,7 @@ public class AuthController {
         if(this.userService.isOTPValid(otpDto.getEmail()) && userOTP.getOtp()!=null) {
             if (userOTP.getOtp() == otpDto.getOne_time_password()) {
                 userOTP.setActive(true);
+                userOTP.setActiveTwoStep(true);
                 userOTP.setOtp(null);
                 userOTP.setOtpRequestedTime(null);
                 this.userRepo.save(userOTP);
