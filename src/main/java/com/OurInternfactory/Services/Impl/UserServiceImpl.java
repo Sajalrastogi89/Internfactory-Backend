@@ -2,15 +2,9 @@ package com.OurInternfactory.Services.Impl;
 
 import com.OurInternfactory.Configs.AppConstants;
 import com.OurInternfactory.Exceptions.ResourceNotFoundException;
-import com.OurInternfactory.Models.Category;
-import com.OurInternfactory.Models.Resume;
-import com.OurInternfactory.Models.Role;
-import com.OurInternfactory.Models.User;
+import com.OurInternfactory.Models.*;
 import com.OurInternfactory.Payloads.*;
-import com.OurInternfactory.Repositories.CategoryRepo;
-import com.OurInternfactory.Repositories.ResumeRepo;
-import com.OurInternfactory.Repositories.RoleRepo;
-import com.OurInternfactory.Repositories.UserRepo;
+import com.OurInternfactory.Repositories.*;
 import com.OurInternfactory.Services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
@@ -34,9 +28,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final ResumeRepo resumeRepo;
+    private final InternshipRepo internshipRepo;
     private final RoleRepo roleRepo;
 
-    public UserServiceImpl(CategoryRepo catRepo, UserRepo userRepo, ModelMapper modelMapper, PasswordEncoder passwordEncoder, RoleRepo roleRepo, CategoryRepo categRepo, ResumeRepo resumeRepo) {
+    public UserServiceImpl(CategoryRepo catRepo, UserRepo userRepo, ModelMapper modelMapper, PasswordEncoder passwordEncoder, RoleRepo roleRepo, CategoryRepo categRepo, ResumeRepo resumeRepo, InternshipRepo internshipRepo) {
         this.catRepo = catRepo;
         this.userRepo = userRepo;
         this.modelMapper = modelMapper;
@@ -44,6 +39,7 @@ public class UserServiceImpl implements UserService {
         this.roleRepo = roleRepo;
         this.categRepo = categRepo;
         this.resumeRepo = resumeRepo;
+        this.internshipRepo = internshipRepo;
     }
 
     @Override
@@ -53,6 +49,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         user.setOtp(otp);
         user.setActive(false);
+        user.setTwoStepVerification(false);
+        user.setActiveTwoStep(false);
         user.setProfilePhoto("default.png");
         user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
         Role role = this.roleRepo.findById(AppConstants.ROLE_NORMAL).get();
@@ -70,6 +68,8 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDto.getCompanyEmail());
         user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
         //encoded the password
+        user.setTwoStepVerification(false);
+        user.setActiveTwoStep(false);
         user.setOtp(otp);
         user.setActive(false);
         user.setProfilePhoto("default.png");
@@ -173,12 +173,22 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public List<InternshipsDto> getAllTrendingInternship() {
+        List<Internships> cat = this.internshipRepo.findAll(Sort.by(Sort.Direction.DESC, "submissions"));
+        return cat.stream().map(this::InternshipToDto).collect(Collectors.toList());
+
+    }
+
     public User DtoToUser(UserDto userdto) {
         return this.modelMapper.map(userdto, User.class);
     }
     public UserDto UserToDto(User user){return this.modelMapper.map(user, UserDto.class);}
     public CategoryDTO CategoryToDto(Category category){
         return this.modelMapper.map(category, CategoryDTO.class);
+    }
+    public InternshipsDto InternshipToDto(Internships internship){
+        return this.modelMapper.map(internship, InternshipsDto.class);
     }
 
 }

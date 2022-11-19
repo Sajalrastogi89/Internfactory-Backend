@@ -22,7 +22,6 @@ public class InternFactoryApplication implements CommandLineRunner{
     }
 
     public static void main(String[] args) {
-
         SpringApplication.run(InternFactoryApplication.class, args);
     }
     @Bean

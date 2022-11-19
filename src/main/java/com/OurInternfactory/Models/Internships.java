@@ -42,7 +42,7 @@ public class Internships {
     private String imageUrl;
     private Date issuedDate;
     @Column(name = "active")
-    private boolean active=true;
+    private boolean active;
     @JsonIgnore
     @ManyToOne
     private Category category;

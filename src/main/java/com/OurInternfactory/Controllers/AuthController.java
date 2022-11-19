@@ -147,9 +147,7 @@ public class AuthController {
 
 
 
-
-
-     @PutMapping("/user/{userEmail}/twoStepEnable")
+    @PutMapping("/user/{userEmail}/twoStepEnable")
     public ResponseEntity<?> EnableTwoStep(@PathVariable String userEmail){
         User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+userEmail, 0));
         if(user.getPhoneNumber() != null) {
@@ -167,7 +165,10 @@ public class AuthController {
             return new ResponseEntity<>(new ApiResponse("Please complete the user profile first!", true), HttpStatus.BAD_REQUEST);
         }
     }
-    
+
+
+
+
     //Forget Password and otp generator API
     @PostMapping("/forget")
     public ResponseEntity<?> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {
