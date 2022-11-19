@@ -246,4 +246,13 @@ public class AuthController {
         ApiResponse apiResponse = new ApiResponse("Password Reset SUCCESS", true);
         return new ResponseEntity<>(apiResponse, OK);
     }
+    
+    @GetMapping("/pdf/generate")
+    public void generateCV(HttpServletResponse response, @RequestBody CVGenerator cvData) throws IOException {
+        response.setContentType("application/pdf");
+        String headerKey="Content-Disposition";
+        String headerValue="attachment; filename=GeneratedCV.pdf";
+        response.setHeader(headerKey,headerValue);
+        this.userService.export(response,cvData);
+    }
 }
