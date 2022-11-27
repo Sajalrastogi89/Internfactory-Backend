@@ -21,5 +21,5 @@ public interface UserService {
     List<CategoryDTO> getAllTrendingCategory();
 
     List<InternshipsDto> getAllTrendingInternship();
-    void export(HttpServletResponse response, CVGenerator cvData) throws IOException;
+//    void export(HttpServletResponse response, CVGenerator cvData) throws IOException;
 }
