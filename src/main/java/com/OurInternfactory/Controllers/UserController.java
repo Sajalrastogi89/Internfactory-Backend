@@ -84,7 +84,10 @@ public class UserController {
     //Edit a user account by the user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
     @PutMapping("/editUserInfo")
-    public ResponseEntity<ApiResponse> updateProfile(@Valid @RequestBody EditUserDto editUserDto) {
+    public ResponseEntity<ApiResponse> updateProfile(@Valid @RequestBody EditUserDto editUserDto, @RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String Email= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
+        editUserDto.setEmail(Email);
         String message = this.userService.updateUserProfile(editUserDto);
         ApiResponse apiResponse = new ApiResponse(message, true);
         return ResponseEntity.ok(apiResponse);

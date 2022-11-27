@@ -102,8 +102,6 @@ public class UserServiceImpl implements UserService {
         User userUpdate = this.userRepo.findByEmail(editUserDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+editUserDto.getEmail(), 0));
         userUpdate.setFirstname(editUserDto.getFirstname());
         userUpdate.setLastname(editUserDto.getLastname());
-        editUserDto.setNewemail(editUserDto.getNewemail().toLowerCase());
-        userUpdate.setEmail(editUserDto.getNewemail());
         userUpdate.setGender(editUserDto.getGender());
         userUpdate.setPhoneNumber(editUserDto.getPhoneNumber());
         this.userRepo.save(userUpdate);
