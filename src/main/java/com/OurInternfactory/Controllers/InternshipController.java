@@ -2,14 +2,21 @@ package com.OurInternfactory.Controllers;
 
 import com.OurInternfactory.Exceptions.ResourceNotFoundException;
 import com.OurInternfactory.Models.Internships;
+import com.OurInternfactory.Models.Submission;
+import com.OurInternfactory.Models.User;
 import com.OurInternfactory.Payloads.*;
 import com.OurInternfactory.Repositories.InternshipRepo;
+import com.OurInternfactory.Repositories.SubmissionRepo;
+import com.OurInternfactory.Repositories.UserRepo;
+import com.OurInternfactory.Security.JwtTokenHelper;
 import com.OurInternfactory.Services.FileServices;
 import com.OurInternfactory.Services.InternshipServices;
 import com.OurInternfactory.Services.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
@@ -26,29 +34,37 @@ public class InternshipController {
     private final FileServices fileServices;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final JwtTokenHelper jwtTokenHelper;
+    private final UserRepo userRepo;
+    private final SubmissionRepo submissionRepo;
     @Value("${project.image}")
     private String path;
-    public InternshipController(InternshipServices internshipServices, InternshipRepo internshipRepo, FileServices fileServices, ModelMapper modelMapper, UserService userService) {
+    public InternshipController(InternshipServices internshipServices, InternshipRepo internshipRepo, FileServices fileServices, ModelMapper modelMapper, UserService userService, JwtTokenHelper jwtTokenHelper, UserRepo userRepo, SubmissionRepo submissionRepo) {
         this.internshipServices = internshipServices;
         this.internshipRepo = internshipRepo;
         this.fileServices = fileServices;
         this.modelMapper = modelMapper;
         this.userService = userService;
+        this.jwtTokenHelper = jwtTokenHelper;
+        this.userRepo = userRepo;
+        this.submissionRepo = submissionRepo;
     }
 
 
 
     //Create internship can be added either by the host or the Admin
     @PreAuthorize("hasAnyRole('HOST', 'ADMIN')")
-    @PostMapping("/category/{categoryid}/host/{hostEmail}/internships")
-    public ResponseEntity<InternshipsDto> createInternship(@RequestBody InternshipAssessment internshipAssessment, @PathVariable Integer categoryid, @PathVariable String hostEmail){
+    @PostMapping("/category/{categoryid}/internships")
+    public ResponseEntity<InternshipsDto> createInternship(@RequestBody InternshipAssessment internshipAssessment, @PathVariable Integer categoryid, @RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String hostEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
         InternshipsDto newInternship = this.internshipServices.createInternship(internshipAssessment, categoryid, hostEmail);
         return new ResponseEntity<>(newInternship, HttpStatus.CREATED);
     }
 
 
 
-    @GetMapping("/getAssessment/internhip/{internshipid}")
+    @GetMapping("/getAssessment/internship/{internshipid}")
     public ResponseEntity<?> getAssessment(@PathVariable Integer internshipid){
         Internships internship = this.internshipRepo.findById(internshipid).orElseThrow(() -> new ResourceNotFoundException("Internship", "InternshipId: ", internshipid));
         SubmissionDto submission = this.modelMapper.map(internship.submissionModel, SubmissionDto.class);
@@ -57,8 +73,10 @@ public class InternshipController {
 
     //Apply Internship can only be done by normal user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
-    @PostMapping("/user/{Email}/internships/{internshipid}/apply")
-    public ResponseEntity<?> applyInternship(@PathVariable String Email, @PathVariable Integer internshipid, @RequestBody SubmissionDto submissionDto) {
+    @PostMapping(path = "/internships/{internshipid}/apply")
+    public ResponseEntity<?> applyInternship(@PathVariable Integer internshipid, @RequestBody SubmissionDto submissionDto, @RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String Email= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
         Internships internships = this.internshipRepo.findById(internshipid).orElseThrow(()-> new ResourceNotFoundException("Internship", "internshipid", internshipid));
         if (internships.isActive()){
             SubmissionDto submissionDto1 = this.internshipServices.applyForInternship(Email, internshipid, submissionDto);
@@ -71,17 +89,24 @@ public class InternshipController {
 
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
     @PutMapping("/internships/{internshipid}/pause")
-    public ResponseEntity<?> pauseInternship(@PathVariable Integer internshipid){
-        Internships internships = this.internshipRepo.findById(internshipid).orElseThrow(()-> new ResourceNotFoundException("Internship", "internshipid", internshipid));
-        if(internships.isActive()){
-            internships.setActive(false);
-            this.internshipRepo.save(internships);
-            return  new ResponseEntity<>(new ApiResponse("Internship has been paused", true), HttpStatus.OK);
+    public ResponseEntity<?> pauseInternship(@PathVariable Integer internshipid, @RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String Email= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
+        User TokenUser = this.userRepo.findByEmail(Email).orElseThrow(()->new ResourceNotFoundException("User", "Email: "+Email, 0));
+        Internships internships = this.internshipRepo.findById(internshipid).orElseThrow(() -> new ResourceNotFoundException("Internship", "internshipid", internshipid));
+        if(Objects.equals(internships.getUser(), TokenUser)) {
+            if (internships.isActive()) {
+                internships.setActive(false);
+                this.internshipRepo.save(internships);
+                return new ResponseEntity<>(new ApiResponse("Internship has been paused", true), HttpStatus.OK);
+            } else {
+                internships.setActive(true);
+                this.internshipRepo.save(internships);
+                return new ResponseEntity<>(new ApiResponse("Internship has been resumed", true), HttpStatus.OK);
+            }
         }
         else{
-            internships.setActive(true);
-            this.internshipRepo.save(internships);
-            return  new ResponseEntity<>(new ApiResponse("Internship has been resumed", true), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("User not Authorized to perform the action", false), HttpStatus.FORBIDDEN);
         }
     }
 
@@ -102,9 +127,18 @@ public class InternshipController {
 
     //Delete Submisssion API
     @DeleteMapping("/submission/{submissionId}")
-    public ResponseEntity<ApiResponse> deleteSubmission(@PathVariable Integer submissionId){
-        String message = this.internshipServices.deleteSubmissionForm(submissionId);
-        return new ResponseEntity<>(new ApiResponse(message, true), HttpStatus.OK);
+    public ResponseEntity<ApiResponse> deleteSubmission(@PathVariable Integer submissionId, @RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String Email= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
+        User TokenUser = this.userRepo.findByEmail(Email).orElseThrow(()->new ResourceNotFoundException("User", "Email: "+Email, 0));
+        Submission submission = this.submissionRepo.getById(submissionId);
+        if(TokenUser.getSubmission().contains(submission)){
+            String message = this.internshipServices.deleteSubmissionForm(submissionId);
+            return new ResponseEntity<>(new ApiResponse(message, true), HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(new ApiResponse("User not Authorized to perform the action", false), HttpStatus.FORBIDDEN);
+        }
     }
 
 

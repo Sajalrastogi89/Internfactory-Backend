@@ -76,10 +76,6 @@ public class UserServiceImpl implements UserService {
         user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
         //roles
         Role role = this.roleRepo.findById(AppConstants.ROLE_HOST).get();
-//        Resume resume = new Resume();
-//        resume.setUser(user);
-//        resumeRepo.save(resume);
-//        user.setResume(resume);
         user.getRoles().add(role);
         this.userRepo.save(user);
     }

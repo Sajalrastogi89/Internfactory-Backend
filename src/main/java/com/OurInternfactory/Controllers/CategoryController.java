@@ -21,7 +21,6 @@ public class CategoryController {
     @GetMapping(value="/getCategory")
     public ResponseEntity<List<CategoryDTO>> getAllCategories(){
         return ResponseEntity.ok(this.userService.getAllCategory());
-
     }
 
 
@@ -30,6 +29,5 @@ public class CategoryController {
     @GetMapping(value="/getTrending")
     public ResponseEntity<List<CategoryDTO>> getAllTrendingCategories(){
         return ResponseEntity.ok(this.userService.getAllTrendingCategory());
-
     }
 }

@@ -12,6 +12,7 @@ import com.OurInternfactory.Services.JWTTokenGenerator;
 import com.OurInternfactory.Services.OTPService;
 import com.OurInternfactory.Services.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ import java.util.Date;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(path ="/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
     private static final long OTP_VALID_DURATION = 10 * 60 * 1000;
     private final UserRepo userRepo;
@@ -50,7 +51,7 @@ public class AuthController {
         User user = this.userRepo.findByEmail(request.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+request.getEmail(), 0));
         if(!user.getTwoStepVerification() || user.isActiveTwoStep()){
             user.setTwoStepVerification(false);
-            this.userRepo.save(user);
+            user.setActiveTwoStep(false);
             if (user.isActive()){
                 JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
                 response.setFirstname(user.getFirstname());
