@@ -4,11 +4,13 @@ import com.OurInternfactory.Exceptions.ResourceNotFoundException;
 import com.OurInternfactory.Models.User;
 import com.OurInternfactory.Payloads.*;
 import com.OurInternfactory.Repositories.UserRepo;
+import com.OurInternfactory.Security.JwtTokenHelper;
 import com.OurInternfactory.Services.FileServices;
 import com.OurInternfactory.Services.UserService;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +29,13 @@ public class UserController {
     @Value("${project.image}")
     private String path;
     private final UserRepo userRepo;
+    public final JwtTokenHelper jwtTokenHelper;
 
-    public UserController(UserService userService, FileServices fileServices, UserRepo userRepo) {
+    public UserController(UserService userService, FileServices fileServices, UserRepo userRepo, JwtTokenHelper jwtTokenHelper) {
         this.userService = userService;
         this.fileServices = fileServices;
         this.userRepo = userRepo;
+        this.jwtTokenHelper = jwtTokenHelper;
     }
 
 
@@ -120,6 +124,28 @@ public class UserController {
         }
         else{
                 return new ResponseEntity<>(new FileDto(filename, "File is not of image type(JPEG/ JPG or PNG)!!!"), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @PutMapping("/twoStepEnable")
+    public ResponseEntity<?> EnableTwoStep(@RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
+        User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+userEmail, 0));
+        if(user.getPhoneNumber() != null) {
+            if (user.getTwoStepVerification()) {
+                user.setTwoStepVerification(false);
+                this.userRepo.save(user);
+                return new ResponseEntity<>(new ApiResponse("Two step verification has been disabled", true), HttpStatus.OK);
+            } else {
+                user.setTwoStepVerification(true);
+                this.userRepo.save(user);
+                return new ResponseEntity<>(new ApiResponse("Two step verification has been enabled", true), HttpStatus.OK);
+            }
+        }
+        else{
+            return new ResponseEntity<>(new ApiResponse("Please complete the user profile first!", true), HttpStatus.BAD_REQUEST);
         }
     }
 }

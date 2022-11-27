@@ -53,6 +53,8 @@ public class AuthController {
             this.userRepo.save(user);
             if (user.isActive()){
                 JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
+                response.setFirstname(user.getFirstname());
+                response.setLastname(user.getLastname());
                 return new ResponseEntity<>(response, OK);
             } else {
                 ApiResponse apiResponse34 = new ApiResponse("Please verify your email first", false);
@@ -146,29 +148,6 @@ public class AuthController {
     }
 
 
-
-    @PutMapping("/user/{userEmail}/twoStepEnable")
-    public ResponseEntity<?> EnableTwoStep(@PathVariable String userEmail){
-        User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+userEmail, 0));
-        if(user.getPhoneNumber() != null) {
-            if (user.getTwoStepVerification()) {
-                user.setTwoStepVerification(false);
-                this.userRepo.save(user);
-                return new ResponseEntity<>(new ApiResponse("Two step verification has been disabled", true), HttpStatus.OK);
-            } else {
-                user.setTwoStepVerification(true);
-                this.userRepo.save(user);
-                return new ResponseEntity<>(new ApiResponse("Two step verification has been enabled", true), HttpStatus.OK);
-            }
-        }
-        else{
-            return new ResponseEntity<>(new ApiResponse("Please complete the user profile first!", true), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
-
-
     //Forget Password and otp generator API
     @PostMapping("/forget")
     public ResponseEntity<?> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {
@@ -247,12 +226,12 @@ public class AuthController {
         return new ResponseEntity<>(apiResponse, OK);
     }
     
-    @GetMapping("/pdf/generate")
-    public void generateCV(HttpServletResponse response, @RequestBody CVGenerator cvData) throws IOException {
-        response.setContentType("application/pdf");
-        String headerKey="Content-Disposition";
-        String headerValue="attachment; filename=GeneratedCV.pdf";
-        response.setHeader(headerKey,headerValue);
-        this.userService.export(response,cvData);
-    }
+//    @GetMapping("/pdf/generate")
+//    public void generateCV(HttpServletResponse response, @RequestBody CVGenerator cvData) throws IOException {
+//        response.setContentType("application/pdf");
+//        String headerKey="Content-Disposition";
+//        String headerValue="attachment; filename=GeneratedCV.pdf";
+//        response.setHeader(headerKey,headerValue);
+//        this.userService.export(response,cvData);
+//    }
 }
