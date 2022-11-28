@@ -108,10 +108,11 @@ public class UserController {
 
 
     //To upload the profile photo
-    @PostMapping("/setprofilephoto/{userEmail}")
+    @PostMapping("/setprofilephoto")
     public ResponseEntity<FileDto> settProfileImage(
-            @RequestParam("image") MultipartFile image, @PathVariable String userEmail
-    ) {
+            @RequestParam("image") MultipartFile image, @RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
             String filename = null;
         if (image.getContentType().equals("image/png")
                 || image.getContentType().equals("image/jpg")
