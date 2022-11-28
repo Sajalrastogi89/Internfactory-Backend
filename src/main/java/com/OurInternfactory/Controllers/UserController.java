@@ -41,27 +41,29 @@ public class UserController {
 
     //--------------------------------------------------  CRUD -------------------------------------------------------------------------------
     //POST -create user
-    @PostMapping("/")
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-        UserDto createdUserDto = this.userService.createUser(userDto);
-        return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
-    }
+//    @PostMapping("/")
+//    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+//        UserDto createdUserDto = this.userService.createUser(userDto);
+//        return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
+//    }
 
     //PUT -update user
-    @PutMapping("/{userid}")
-    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userid") Integer userId) {
-        UserDto updatedUser = this.userService.updateUser(userDto, userId);
-        return ResponseEntity.ok(updatedUser);
-    }
+//    @PutMapping("/{userid}")
+//    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userid") Integer userId) {
+//        UserDto updatedUser = this.userService.updateUser(userDto, userId);
+//        return ResponseEntity.ok(updatedUser);
+//    }
 
     //------------------------------------------------------------------------------------------------------------------------------------------------
 
 
     //Delete - delete user
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse> deleteUser(@PathVariable("userId") Integer userid) {
-        this.userService.DeleteUser(userid);
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<ApiResponse> deleteUser(@RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
+        User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+userEmail, 0));
+        this.userService.DeleteUser(user.getId());
         return new ResponseEntity<>(new ApiResponse("User Deleted Successfully", true), HttpStatus.OK);
     }
 
