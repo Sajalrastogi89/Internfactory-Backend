@@ -98,9 +98,9 @@ public class UserController {
 
     //get the user profile using the user email or username
     @PostMapping("/getUserInfo")
-    public ResponseEntity<GetProfileResponse> getUserInfo(@RequestBody ForgetEmail forgetEmail) {
-        forgetEmail.setEmail(forgetEmail.getEmail().toLowerCase());
-        String finalEmail = forgetEmail.getEmail();
+    public ResponseEntity<GetProfileResponse> getUserInfo(@RequestHeader("Authorization") String bearerToken){
+        bearerToken = bearerToken.substring(7);
+        String finalEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
         User user = this.userRepo.findByEmail(finalEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email :" + finalEmail, 0));
         GetProfileResponse editUserDto = new GetProfileResponse(user.getId(), user.getProfilePhoto(), user.getFirstname(), user.getLastname(), user.getGender(), user.getEmail(), user.getPhoneNumber());
         return new ResponseEntity<>(editUserDto, HttpStatus.OK);
