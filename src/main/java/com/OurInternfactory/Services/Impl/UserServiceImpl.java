@@ -145,6 +145,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserPass(ForgetPassword password) {
         User user = this.userRepo.findByEmail(password.getEmail()).orElseThrow(()-> new ResourceNotFoundException("User", "Email :"+password.getEmail(), 0));
+        user.setOtp(null);
+        user.setOtpRequestedTime(null);
         user.setPassword(this.passwordEncoder.encode(password.getPassword()));
         this.userRepo.save(user);
     }
