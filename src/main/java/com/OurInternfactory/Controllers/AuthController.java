@@ -39,11 +39,6 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
         this.roleRepo = roleRepo;
     }
-
-
-
-
-
     // User as well as the host login API and          -------------------------/TOKEN GENERATOR/-----------------------
     @PostMapping("/login")
     public ResponseEntity<?> createToken(@Valid @RequestBody JwtAuthRequest request) {
@@ -52,29 +47,24 @@ public class AuthController {
         if(!user.getTwoStepVerification() || user.isActiveTwoStep()){
             user.setTwoStepVerification(false);
             user.setActiveTwoStep(false);
+            this.userRepo.save(user);
             if (user.isActive()){
                 JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
                 response.setFirstname(user.getFirstname());
                 response.setLastname(user.getLastname());
                 return new ResponseEntity<>(response, OK);
             } else {
-                ApiResponse apiResponse34 = new ApiResponse("Please verify your email first", false);
-                return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(new ApiResponse("Please verify your email first", false), HttpStatus.NOT_ACCEPTABLE);
             }
         }
         else{
-            /// code to send the OTO on mobile number;
+            /// code to send the OTP on mobile number;
             user.setOtp(otpService.OTPRequestMobile(user.getPhoneNumber()));
             user.setOtpRequestedTime(new Date(System.currentTimeMillis()+OTP_VALID_DURATION));
             this.userRepo.save(user);
             return new ResponseEntity<>(new ApiResponse("OTP has been successfully sent on the registered mobile number!!", true), HttpStatus.CONTINUE);
         }
     }
-
-
-
-
-
     //SignUP API for user
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserDto userDto){
@@ -82,62 +72,54 @@ public class AuthController {
         userDto.setLastname(userDto.getLastname().trim());
         userDto.setEmail(userDto.getEmail().trim().toLowerCase());
         if(userService.emailExists(userDto.getEmail())){
-            return getResponseEntity(userDto, AppConstants.ROLE_HOST, AppConstants.ROLE_NORMAL);
+            return getResponseEntity(userDto);
         }
         else{
             this.userService.registerNewUser(userDto, otpService.OTPRequest(userDto.getEmail()));
-            ApiResponse apiResponse = new ApiResponse();
-            apiResponse.setSuccess(true);
-            apiResponse.setMessage("OTP Sent Success on the entered Email");
-            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+            return new ResponseEntity<>(new ApiResponse("OTP Sent Success on the entered Email", true), HttpStatus.CREATED);
         }
     }
-
-    private ResponseEntity<?> getResponseEntity(@RequestBody @Valid UserDto userDto, int roleHost, Integer roleNormal) {
+    private ResponseEntity<?> getResponseEntity(@RequestBody @Valid UserDto userDto) {
         User user = this.userRepo.findByEmail(userDto.getEmail()).orElseThrow(()->new ResourceNotFoundException("User", "Email: "+userDto.getEmail(), 0));
         if(user.isActive()){
-            ApiResponse apiResponse34 = new ApiResponse("User already exist with the entered email id", false);
-            return new ResponseEntity<>(apiResponse34, HttpStatus.CONFLICT);
+            return new ResponseEntity<>(new ApiResponse("User already exist with the entered email id", false), HttpStatus.CONFLICT);
         }
         else{
             user.setFirstname(userDto.getFirstname());
             user.setLastname(userDto.getLastname());
             user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
-            Role oldRole = this.roleRepo.findById(roleHost).get();
+            Role oldRole = this.roleRepo.findById(AppConstants.ROLE_HOST).get();
             if(user.getRoles().contains(oldRole)){
-                Role newRole = this.roleRepo.findById(roleNormal).get();
+                Role newRole = this.roleRepo.findById(AppConstants.ROLE_NORMAL).get();
                 user.getRoles().add(newRole);
             }
             this.userRepo.save(user);
             return sendOTP(new ForgetEmail(userDto.getEmail()));
         }
     }
-    private ResponseEntity<?> getResponseEntityHOST(@RequestBody @Valid RegisterHost userDto, int roleHost, Integer roleNormal) {
+    private ResponseEntity<?> getResponseEntityHOST(@RequestBody @Valid RegisterHost userDto) {
         User user = this.userRepo.findByEmail(userDto.getCompanyEmail()).orElseThrow(()->new ResourceNotFoundException("User", "Email: "+userDto.getCompanyEmail(), 0));
         if(user.isActive()){
-            ApiResponse apiResponse34 = new ApiResponse("User already exist with the entered email id", false);
-            return new ResponseEntity<>(apiResponse34, HttpStatus.CONFLICT);
+            return new ResponseEntity<>(new ApiResponse("User already exist with the entered email id", false), HttpStatus.CONFLICT);
         }
         else{
             user.setFirstname(userDto.getCompanyEmail().substring(0, userDto.getCompanyEmail().indexOf("@")));
             user.setPassword(this.passwordEncoder.encode(userDto.getPassword()));
-            Role oldRole = this.roleRepo.findById(roleHost).get();
+            Role oldRole = this.roleRepo.findById(AppConstants.ROLE_NORMAL).get();
             if(user.getRoles().contains(oldRole)){
-                Role newRole = this.roleRepo.findById(roleNormal).get();
+                Role newRole = this.roleRepo.findById(AppConstants.ROLE_HOST).get();
                 user.getRoles().add(newRole);
             }
             this.userRepo.save(user);
             return sendOTP(new ForgetEmail(userDto.getCompanyEmail()));
         }
     }
-
-
     //Signup API for Host
     @PostMapping("/signupHost")
     public ResponseEntity<?> registerHost(@Valid @RequestBody RegisterHost registerNewHost) {
         registerNewHost.setCompanyEmail(registerNewHost.getCompanyEmail().trim().toLowerCase());
         if (userService.emailExists(registerNewHost.getCompanyEmail())){
-            return getResponseEntityHOST(registerNewHost, AppConstants.ROLE_NORMAL, AppConstants.ROLE_HOST);
+            return getResponseEntityHOST(registerNewHost);
         }
         else {
             this.userService.registerNewHost(registerNewHost, otpService.OTPRequest(registerNewHost.getCompanyEmail()));
@@ -147,8 +129,6 @@ public class AuthController {
             return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
         }
     }
-
-
     //Forget Password and otp generator API
     @PostMapping("/forget")
     public ResponseEntity<?> sendOTP(@Valid @RequestBody ForgetEmail forgetEmail) {
@@ -162,19 +142,14 @@ public class AuthController {
             this.userRepo.save(user);
         }
         else{
-            ApiResponse apiResponse34 = new ApiResponse("User does not exist with the entered email id", false);
-            return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_FOUND);
+            ApiResponse apiResponse = new ApiResponse("User does not exist with the entered email id", false);
+            return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
         }
         ApiResponse apiResponse = new ApiResponse();
         apiResponse.setSuccess(true);
         apiResponse.setMessage("OTP Sent Success");
         return new ResponseEntity<>(apiResponse, OK);
     }
-
-
-
-
-
     //Verify OTP for activation of user/host account
     @PostMapping("/verifyotp")
     public ResponseEntity<?> verifyOtp(@Valid @RequestBody OtpDto otpDto) {
@@ -193,19 +168,13 @@ public class AuthController {
                 return new ResponseEntity<>(apiResponse, OK);
             }
             else {
-                ApiResponse apiResponse34 = new ApiResponse("Invalid OTP!!", false);
-                return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(new ApiResponse("Invalid OTP!!", false), HttpStatus.NOT_ACCEPTABLE);
             }
         }
         else{
             throw new Apiexception("INVALID ACTION!!!");
         }
     }
-
-
-
-
-
     //Reset Password OTP to change the password
     @PostMapping("/resetpass")
     public ResponseEntity<?> resetPass(@Valid @RequestBody ForgetPassword forgetPassword){
@@ -216,17 +185,14 @@ public class AuthController {
                 this.userService.updateUserPass(forgetPassword);
             }
             else {
-                ApiResponse apiResponse34 = new ApiResponse("Please, check if the password and conform password fields matches", false);
-                return new ResponseEntity<>(apiResponse34, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(new ApiResponse("Please, check if the password and conform password fields matches", false), HttpStatus.NOT_ACCEPTABLE);
             }
         }
         else{
             throw new Apiexception("Please Verify the OTP first");
         }
-        ApiResponse apiResponse = new ApiResponse("Password Reset SUCCESS", true);
-        return new ResponseEntity<>(apiResponse, OK);
+        return new ResponseEntity<>(new ApiResponse("Password Reset SUCCESS", true), OK);
     }
-    
 //    @GetMapping("/pdf/generate")
 //    public void generateCV(HttpServletResponse response, @RequestBody CVGenerator cvData) throws IOException {
 //        response.setContentType("application/pdf");

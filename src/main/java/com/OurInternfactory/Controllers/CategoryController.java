@@ -14,9 +14,6 @@ public class CategoryController {
     public CategoryController(UserService userService) {
         this.userService = userService;
     }
-
-
-
     // Get ALL categories on the home page
     @GetMapping(value="/getCategory")
     public ResponseEntity<List<CategoryDTO>> getAllCategories(){
