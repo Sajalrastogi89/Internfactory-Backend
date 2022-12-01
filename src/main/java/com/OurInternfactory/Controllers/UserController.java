@@ -72,7 +72,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponse);
     }
 //get the user profile using the user email or username
-    @PostMapping("/getUserInfo")
+    @GetMapping("/getUserInfo")
     public ResponseEntity<GetProfileResponse> getUserInfo(@RequestHeader("Authorization") String bearerToken){
         String finalEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
         User user = this.userRepo.findByEmail(finalEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email :" + finalEmail, 0));
@@ -80,7 +80,7 @@ public class UserController {
         return new ResponseEntity<>(editUserDto, HttpStatus.OK);
     }
 //To upload the profile photo
-    @PostMapping("/setprofilephoto")
+    @PutMapping("/setprofilephoto")
     public ResponseEntity<FileDto> settProfileImage(
             @RequestParam("image") MultipartFile image, @RequestHeader("Authorization") String bearerToken){
         String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
@@ -91,7 +91,8 @@ public class UserController {
                 filename = this.fileServices.uploadImage(path, image);
                 user.setProfilePhoto(filename);
                 this.userRepo.save(user);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
             }

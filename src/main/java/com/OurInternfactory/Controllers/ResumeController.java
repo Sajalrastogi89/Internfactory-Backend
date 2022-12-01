@@ -21,10 +21,7 @@ public class ResumeController {
         this.resumeService = resumeService;
         this.jwtTokenHelper = jwtTokenHelper;
     }
-
-
-
-    //get the resume using the email
+//get the resume using the email
     @GetMapping("/getResume")
     public ResponseEntity<ResumeDTO> getResume(@RequestHeader("Authorization") String bearerToken){
         bearerToken = bearerToken.substring(7);
@@ -32,27 +29,18 @@ public class ResumeController {
         ResumeDTO resumeDTO = this.resumeService.getUserResume(userEmail);
         return new ResponseEntity<>(resumeDTO, HttpStatus.OK);
     }
-
-
-
-    //Edit the resume by the user
+//Edit the resume by the user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
-    @PutMapping("/editResume")
-    public ResponseEntity<ResumeDTO> setResume(@RequestBody EditResumeDto editResumeDto, @RequestHeader("Authorization") String bearerToken){
-        bearerToken = bearerToken.substring(7);
-        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
-        ResumeDTO UpdatedResume = this.resumeService.setUserResume(editResumeDto.getEmail(), editResumeDto.getResumeDTO());
+    @PostMapping("/editResume")
+    public ResponseEntity<ResumeDTO> setResume(@RequestBody ResumeDTO editResumeDto, @RequestHeader("Authorization") String bearerToken) {
+        ResumeDTO UpdatedResume = this.resumeService.setUserResume(this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7)), editResumeDto);
         return new ResponseEntity<>(UpdatedResume, HttpStatus.OK);
     }
-
-
-
-    //Delete the resume by the user
+//Delete the resume by the user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
     @DeleteMapping("/deleteResume")
-    public ResponseEntity<ApiResponse> deleteResume(@RequestBody ForgetEmail forgetEmail){
-        String message = this.resumeService.deleteUserResume(forgetEmail.getEmail());
+    public ResponseEntity<ApiResponse> deleteResume(@RequestHeader("Authorization") String bearerToken) {
+        String message = this.resumeService.deleteUserResume(this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7)));
         return new ResponseEntity<>(new ApiResponse(message, true), HttpStatus.OK);
     }
-
 }

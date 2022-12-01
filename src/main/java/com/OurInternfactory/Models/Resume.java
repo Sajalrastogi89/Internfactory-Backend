@@ -29,7 +29,6 @@ public class Resume {
     private String skills;
     @Column(name = "portfolio", length = 10000)
     private String  portfolio;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private User user;
-
 }

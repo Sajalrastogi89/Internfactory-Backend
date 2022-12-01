@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -157,18 +158,23 @@ public class AuthController {
     public ResponseEntity<?> resetPass(@Valid @RequestBody ForgetPassword forgetPassword){
         forgetPassword.setEmail(forgetPassword.getEmail().trim().toLowerCase());
         User userRP = this.userRepo.findByEmail(forgetPassword.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+forgetPassword.getEmail(), 0));
-        if(userRP.isActive()) {
-            if(this.userService.isOTPValid(forgetPassword.getEmail()) && userRP.getOtp()!=null) {
-                this.userService.updateUserPass(forgetPassword);
+        System.out.println("\n\n\n"+forgetPassword.getOtp()+"\n\n\n"+userRP.getOtp()+"\n\n\n");
+        if (userRP.getOtp() != null) {
+            if(Objects.equals(userRP.getOtp(), forgetPassword.getOtp())){
+                if (this.userService.isOTPValid(forgetPassword.getEmail())) {
+                    this.userService.updateUserPass(forgetPassword);
+                    return new ResponseEntity<>(new ApiResponse("Password Reset SUCCESS", true), OK);
+                } else {
+                    return new ResponseEntity<>(new ApiResponse("Session Expired...........", false), HttpStatus.BAD_REQUEST);
+                }
             }
-            else {
-                return new ResponseEntity<>(new ApiResponse("Invalid OTP!!", false), HttpStatus.NOT_ACCEPTABLE);
+            else{
+                return new ResponseEntity<>(new ApiResponse("Invalid OTP!!!", false), HttpStatus.FORBIDDEN);
             }
         }
         else{
-            throw new Apiexception("Please Verify the OTP first");
+                return new ResponseEntity<>(new ApiResponse("Invalid Action!!", false), HttpStatus.NOT_ACCEPTABLE);
         }
-        return new ResponseEntity<>(new ApiResponse("Password Reset SUCCESS", true), OK);
     }
     private ResponseEntity<?> getResponseEntityHOST(@RequestBody @Valid RegisterHost userDto) {
         User user = this.userRepo.findByEmail(userDto.getCompanyEmail()).orElseThrow(()->new ResourceNotFoundException("User", "Email: "+userDto.getCompanyEmail(), 0));
