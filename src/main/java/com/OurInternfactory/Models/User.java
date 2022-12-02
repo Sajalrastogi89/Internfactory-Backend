@@ -22,27 +22,18 @@ public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    @Column(name = "firstname", nullable = false)
+    @Column(nullable = false)
     private String firstname;
-    @Column(name = "lastname")
     private String lastname;
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
-    @Column(name = "password")
     private String password;
-    @Column(name = "otp")
     private Integer otp;
-    @Column(name  = "otpRequestedTime")
     private Date otpRequestedTime;
-    @Column(name = "active")
     private boolean active;
-    @Column(name = "activeTwoStep")
     private boolean activeTwoStep;
-    @Column(name = "gender")
     private String gender;
-    @Column(name = "mobile")
     private String phoneNumber;
-    @Column(name = "profilePhoto")
     private String profilePhoto;
     private Boolean twoStepVerification;
     @JsonIgnore
@@ -60,7 +51,7 @@ public class User implements UserDetails{
     private Set<Submission> submission;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     private Resume resume;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

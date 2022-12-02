@@ -19,40 +19,39 @@ public class Internships {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
-    @Column(name = "displayName", length=150, nullable = false)
+    @Column(length=150, nullable = false)
     private String displayName;
-    @Column(name = "provider", length=150, nullable = false)
+    @Column(length=150, nullable = false)
     private String provider;
-    @Column(name = "title", length=150, nullable = false)
+    @Column(length=150, nullable = false)
     private String title;
-    @Column(name = "type", length=150, nullable = false)
+    @Column(length=150, nullable = false)
     private String type;
     private String tenure;
     private String stipend;
     private Date lastDate;
-    @Column(name = "about", length = 10000)
+    @Column(length = 10000)
     private String about;
-    @Column(name = "skills", length = 1000)
+    @Column(length = 1000)
     private String skills;
-    @Column(name = "who_can_apply", length = 1000)
+    @Column(length = 1000)
     private String who_can_apply;
-    @Column(name = "perks", length = 1000)
+    @Column(length = 1000)
     private String perks;
     private String imageUrl;
     private Date issuedDate;
-    @Column(name = "active")
     private boolean active;
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Category category;
 //ProviderHOST
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL)
     public User userProvider;
 //UserAPPLICATION
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.PERSIST)
     public Set<User> user;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     public Submission submissionModel;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Set<Submission> submissions;

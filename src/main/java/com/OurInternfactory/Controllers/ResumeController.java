@@ -1,19 +1,13 @@
 package com.OurInternfactory.Controllers;
 
-import com.OurInternfactory.Exceptions.ResourceNotFoundException;
 import com.OurInternfactory.Payloads.ApiResponse;
-import com.OurInternfactory.Payloads.EditResumeDto;
-import com.OurInternfactory.Payloads.ForgetEmail;
 import com.OurInternfactory.Payloads.ResumeDTO;
 import com.OurInternfactory.Security.JwtTokenHelper;
 import com.OurInternfactory.Services.ResumeService;
-import org.apache.http.impl.BHttpConnectionBase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
 
 @RestController
 @RequestMapping("/api")

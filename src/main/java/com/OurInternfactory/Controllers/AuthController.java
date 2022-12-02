@@ -12,18 +12,18 @@ import com.OurInternfactory.Services.JWTTokenGenerator;
 import com.OurInternfactory.Services.OTPService;
 import com.OurInternfactory.Services.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(path ="/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path ="/api/auth")
 public class AuthController {
     private static final long OTP_VALID_DURATION = 10 * 60 * 1000;
     private final UserRepo userRepo;
@@ -53,6 +53,7 @@ public class AuthController {
                 JwtAuthResponse response = jwtTokenGenerator.getTokenGenerate(request.getEmail(), request.getPassword());
                 response.setFirstname(user.getFirstname());
                 response.setLastname(user.getLastname());
+                response.setRole(user.getRoles().iterator().next().getName());
                 return new ResponseEntity<>(response, OK);
             } else {
                 return new ResponseEntity<>(new ApiResponse("Please verify your email first", false), HttpStatus.NOT_ACCEPTABLE);

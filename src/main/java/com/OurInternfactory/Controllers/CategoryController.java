@@ -1,11 +1,8 @@
 package com.OurInternfactory.Controllers;
 
-import com.OurInternfactory.Payloads.CategoryDTO;
 import com.OurInternfactory.Services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")

@@ -23,7 +23,6 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
     private final CustomUserDetailService customUserDetailService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     public MySecurityConfig(CustomUserDetailService customUserDetailService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.customUserDetailService = customUserDetailService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
@@ -46,7 +45,6 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
                  .sessionManagement()
                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
          http.addFilterBefore(this.jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -56,7 +54,6 @@ public class MySecurityConfig extends WebSecurityConfigurerAdapter{
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class JwtTokenHelper {
 
     public static final long JWT_TOKEN_VALIDITY = 24 * 60 *60;
-    private String secret = "jwtTokenKeyJwtTokenKeyJwtTokenKeyJwtTokenKeyJwtTokenKeyJwtTokenKeyjwtTokenKeyJwtTokenKey";
+    private final String secret = "jwtTokenKeyJwtTokenKeyJwtTokenKeyJwtTokenKeyJwtTokenKeyJwtTokenKeyjwtTokenKeyJwtTokenKey";
 
     //retrieve username from jwt token;
     public String getUsernameFromToken(String token){

@@ -22,10 +22,8 @@ public class Category {
     private int categoryId;
     @Column(name = "CateName", nullable = false)
     private String categoryName;
-    @Column(name = "imageName")
     private String imageName;
-    @Column(name = "count")
     private int count;
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Internships> internshipsList = new ArrayList<>();
 }

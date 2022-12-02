@@ -12,12 +12,9 @@ import com.OurInternfactory.Repositories.UserRepo;
 import com.OurInternfactory.Security.JwtTokenHelper;
 import com.OurInternfactory.Services.FileServices;
 import com.OurInternfactory.Services.InternshipServices;
-import com.OurInternfactory.Services.UserService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -35,7 +30,6 @@ public class InternshipController {
     private final InternshipServices internshipServices;
     private final InternshipRepo internshipRepo;
     private final FileServices fileServices;
-    private final UserService userService;
     private final ModelMapper modelMapper;
     private final JwtTokenHelper jwtTokenHelper;
     private final UserRepo userRepo;
@@ -43,32 +37,31 @@ public class InternshipController {
     private final CategoryRepo categoryRepo;
     @Value("${project.image}")
     private String path;
-    public InternshipController(InternshipServices internshipServices, InternshipRepo internshipRepo, FileServices fileServices, ModelMapper modelMapper, UserService userService, JwtTokenHelper jwtTokenHelper, UserRepo userRepo, SubmissionRepo submissionRepo, CategoryRepo categoryRepo) {
+    public InternshipController(InternshipServices internshipServices, InternshipRepo internshipRepo, FileServices fileServices, ModelMapper modelMapper, JwtTokenHelper jwtTokenHelper, UserRepo userRepo, SubmissionRepo submissionRepo, CategoryRepo categoryRepo) {
         this.internshipServices = internshipServices;
         this.internshipRepo = internshipRepo;
         this.fileServices = fileServices;
         this.modelMapper = modelMapper;
-        this.userService = userService;
         this.jwtTokenHelper = jwtTokenHelper;
         this.userRepo = userRepo;
         this.submissionRepo = submissionRepo;
         this.categoryRepo = categoryRepo;
     }
 //Get assessment assigned to an internship
-    @GetMapping("/getAssessment/internship/{internshipid}")
-    public ResponseEntity<?> getAssessment(@PathVariable Integer internshipid) {
-        Internships internship = this.internshipRepo.findById(internshipid).orElseThrow(() -> new ResourceNotFoundException("Internship", "InternshipId: ", internshipid));
+    @GetMapping("/getAssessment/internship/{internshipId}")
+    public ResponseEntity<?> getAssessment(@PathVariable Integer internshipId) {
+        Internships internship = this.internshipRepo.findById(internshipId).orElseThrow(() -> new ResourceNotFoundException("Internship", "InternshipId: ", internshipId));
         SubmissionDto submission = this.modelMapper.map(internship.submissionModel, SubmissionDto.class);
-        return new ResponseEntity<SubmissionDto>(submission, HttpStatus.OK);
+        return new ResponseEntity<>(submission, HttpStatus.OK);
     }
 //Apply internship can only be done by normal user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
-    @PostMapping(path = "/internships/{internshipid}/apply")
-    public ResponseEntity<?> applyInternship(@PathVariable Integer internshipid, @RequestBody SubmissionDto submissionDto, @RequestHeader("Authorization") String bearerToken){
+    @PostMapping(path = "/internships/{internshipId}/apply")
+    public ResponseEntity<?> applyInternship(@PathVariable Integer internshipId, @RequestBody SubmissionDto submissionDto, @RequestHeader("Authorization") String bearerToken){
         String Email= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
-        Internships internships = this.internshipRepo.findById(internshipid).orElseThrow(()-> new ResourceNotFoundException("Internship", "internshipid", internshipid));
+        Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()-> new ResourceNotFoundException("Internship", "internshipId", internshipId));
         if (internships.isActive()){
-            SubmissionDto submissionDto1 = this.internshipServices.applyForInternship(Email, internshipid, submissionDto);
+            SubmissionDto submissionDto1 = this.internshipServices.applyForInternship(Email, internshipId, submissionDto);
             return new ResponseEntity<>(submissionDto1, HttpStatus.OK);
         }
         else{
@@ -147,7 +140,7 @@ public class InternshipController {
             return new ResponseEntity<>(new ApiResponse("User not Authorized to perform the action", false), HttpStatus.FORBIDDEN);
         }
     }
-//Get a internship using internship id
+//Get an internship using internship id
     @GetMapping("/getinternships/{internshipid}")
     public ResponseEntity<InternshipsDto> getInternshipById(@PathVariable Integer internshipid){
         InternshipsDto internshipsDto  = this.internshipServices.getSingleInternship(internshipid);
@@ -156,7 +149,7 @@ public class InternshipController {
 //Delete a internship
     @PreAuthorize("hasAnyRole('HOST', 'ADMIN')")
     @DeleteMapping("/internships/{internshipId}")
-    public ResponseEntity deleteInternship(@PathVariable Integer internshipId, @RequestHeader("Authorization") String bearerToken){
+    public ResponseEntity<?> deleteInternship(@PathVariable Integer internshipId, @RequestHeader("Authorization") String bearerToken){
         String Email= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
         User TokenUser = this.userRepo.findByEmail(Email).orElseThrow(()->new ResourceNotFoundException("User", "Email: "+Email, 0));
         Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(() -> new ResourceNotFoundException("Internship", "internshipid", internshipId));

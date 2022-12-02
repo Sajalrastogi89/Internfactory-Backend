@@ -141,8 +141,6 @@ public class InternshipServiceImpl implements InternshipServices {
     }
     @Override
     public InternshipResponse getAllInternships(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-//        int pageSize = 5;
-//        int pageNumber = 1;
         Sort sort = null;
         if(sortDir.equalsIgnoreCase("asc")){
             sort = Sort.by(sortBy).ascending();
@@ -154,7 +152,6 @@ public class InternshipServiceImpl implements InternshipServices {
         Page<Internships> pageInternships = this.internshipRepo.findAll(p);
         List<Internships> allInternships = pageInternships.getContent();
         List<InternshipDisplayOnly> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipDisplayOnly.class)).collect(Collectors.toList());
-
         return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
     }
     @Override
