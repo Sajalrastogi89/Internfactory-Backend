@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,11 +32,9 @@ public class InternshipServiceImpl implements InternshipServices {
     private final InternshipRepo internshipRepo;
     private final ModelMapper modelMapper;
     private final UserRepo userRepo;
-
     private final CategoryRepo categoryRepo;
     private final SubmissionSucessService submissionSucessService;
     private final SubmissionRepo submissionRepo;
-
     public String getFirstNStrings(String str, int n) {
         String[] sArr = str.split(" ");
         String firstStrs = "";
@@ -43,7 +42,6 @@ public class InternshipServiceImpl implements InternshipServices {
             firstStrs += sArr[i] + " ";
         return firstStrs.trim();
     }
-
     public InternshipServiceImpl(InternshipRepo internshipRepo, ModelMapper modelMapper, UserRepo userRepo, CategoryRepo categoryRepo, SubmissionRepo submissionRepo, SubmissionSucessService submissionSucessService) {
         this.internshipRepo = internshipRepo;
         this.modelMapper = modelMapper;
@@ -52,7 +50,6 @@ public class InternshipServiceImpl implements InternshipServices {
         this.submissionRepo = submissionRepo;
         this.submissionSucessService = submissionSucessService;
     }
-
     @Override
     public InternshipsDto createInternship(InternshipAssessment internshipAssessment, Integer categoryId, String Email) {
         Category category = this.categoryRepo.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException("Category", "CategoryID", categoryId));
@@ -64,10 +61,10 @@ public class InternshipServiceImpl implements InternshipServices {
         internships.setImageUrl(user.getProfilePhoto());
         internships.setIssuedDate(new Date());
         internships.setCategory(category);
+        internships.setUserProvider(user);
         category.getInternshipsList().add(internships);
         Submission createSubmission = new Submission();
         createSubmission.setQuestions(internshipAssessment.getQuestions());
-//        this.submissionRepo.save(createSubmission);
         internships.submissionModel = createSubmission;
         Internships newInternship = this.internshipRepo.save(internships);
         return this.modelMapper.map(newInternship, InternshipsDto.class);
@@ -99,13 +96,11 @@ public class InternshipServiceImpl implements InternshipServices {
             throw new Apiexception("The last date to apply internships has been passed out!!!!\nPlease apply any other internship!!!");
         }
     }
-
     @Override
     public SubmissionDto getSubmissionForm(Integer submissionId) {
         Submission submission = this.submissionRepo.findById(submissionId).orElseThrow(() -> new ResourceNotFoundException("Submission", "submissionId", submissionId));
         return this.modelMapper.map(submission, SubmissionDto.class);
     }
-
     @Override
     public String deleteSubmissionForm(Integer submissionId) {
         Submission submission = this.submissionRepo.findById(submissionId).orElseThrow(() -> new ResourceNotFoundException("Submission", "submissionId", submissionId));
@@ -125,8 +120,6 @@ public class InternshipServiceImpl implements InternshipServices {
         this.submissionRepo.delete(submission);
         return "Your submission successfully deleted";
     }
-
-
     @Override
     public InternshipsDto updateInternship(InternshipsDto internshipsDto, Integer internshipId) {
         Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()-> new ResourceNotFoundException("Internship", "InternshipId", internshipId));
@@ -143,12 +136,11 @@ public class InternshipServiceImpl implements InternshipServices {
     @Override
     public void deleteInternship(Integer internshipId) {
         Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()-> new ResourceNotFoundException("Internship", "InternshipId", internshipId));
+        this.submissionRepo.deleteAllByInternships(internships);
         this.internshipRepo.delete(internships);
     }
     @Override
     public InternshipResponse getAllInternships(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
-//        int pageSize = 5;
-//        int pageNumber = 1;
         Sort sort = null;
         if(sortDir.equalsIgnoreCase("asc")){
             sort = Sort.by(sortBy).ascending();
@@ -160,16 +152,43 @@ public class InternshipServiceImpl implements InternshipServices {
         Page<Internships> pageInternships = this.internshipRepo.findAll(p);
         List<Internships> allInternships = pageInternships.getContent();
         List<InternshipDisplayOnly> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipDisplayOnly.class)).collect(Collectors.toList());
-
         return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
     }
-
+    @Override
+    public InternshipResponse getAllInternshipsHostedByUser(User user, Integer pageNumber, Integer pageSize, String sortBy, String sortDir){
+        Sort sort = null;
+        if(sortDir.equalsIgnoreCase("asc")){
+            sort = Sort.by(sortBy).ascending();
+        }
+        else{
+            sort = Sort.by(sortBy).descending();
+        }
+        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Internships> pageInternships = this.internshipRepo.findByUserProvider(user, p);
+        List<Internships> allInternships = pageInternships.getContent();
+        List<InternshipDisplayOnly> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipDisplayOnly.class)).collect(Collectors.toList());
+        return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
+    }
+    @Override
+    public InternshipResponse getAllTrendingInternship(Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
+        Sort sort = null;
+        if(sortDir.equalsIgnoreCase("asc")){
+            sort = Sort.by(Sort.Direction.ASC, "submissions");
+        }
+        else{
+            sort = Sort.by(Sort.Direction.DESC, "submissions");
+        }
+        Pageable p = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Internships> pageInternships = this.internshipRepo.findAll(p);
+        List<Internships> allInternships = pageInternships.getContent();
+        List<InternshipDisplayOnly> allInternshipsDto =  allInternships.stream().map(this::InternshipToDto).collect(Collectors.toList());
+        return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
+    }
     @Override
     public InternshipsDto getSingleInternship(Integer internshipId) {
         Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()->new ResourceNotFoundException("Internship", "internshipId", internshipId));
         return this.modelMapper.map(internships, InternshipsDto.class);
     }
-
     @Override
     public InternshipResponse getInternshipsByCategory(Integer categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         Category category = this.categoryRepo.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException("Category", "Category Id", categoryId));
@@ -205,7 +224,6 @@ public class InternshipServiceImpl implements InternshipServices {
     }
     @Override
     public InternshipResponse searchInternships(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortDir){
-//        User user = this.userRepo.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User", "userID", userId));
         Sort sort = null;
         if(sortDir.equalsIgnoreCase("asc")){
             sort = Sort.by(sortBy).ascending();
@@ -219,7 +237,6 @@ public class InternshipServiceImpl implements InternshipServices {
         List<InternshipDisplayOnly> allInternshipsDto = allInternships.stream().map((internships) -> this.modelMapper.map(internships, InternshipDisplayOnly.class)).collect(Collectors.toList());
         return new InternshipResponse(allInternshipsDto, pageInternships.getNumber(), pageInternships.getSize(), pageInternships.getTotalPages(), pageInternships.getTotalElements(), pageInternships.isLast());
     }
-
     @Override
     public AppliedUserResponse searchUserByInternship(Integer internshipId, Integer pageNumber, Integer pageSize, String sortBy, String sortDir) {
         Internships internships = this.internshipRepo.findById(internshipId).orElseThrow(()->new ResourceNotFoundException("Internship", "internshipId", internshipId));
@@ -235,5 +252,8 @@ public class InternshipServiceImpl implements InternshipServices {
         List<User> allUsers = pageUser.getContent();
         List<ApppliedUserDto> allUserDto = allUsers.stream().map((internshipe) -> this.modelMapper.map(internshipe, ApppliedUserDto.class)).collect(Collectors.toList());
         return new AppliedUserResponse(allUserDto, pageUser.getNumber(), pageUser.getSize(), pageUser.getTotalPages(), pageUser.getTotalElements(), pageUser.isLast());
+    }
+    public InternshipDisplayOnly InternshipToDto(Internships internship){
+        return this.modelMapper.map(internship, InternshipDisplayOnly.class);
     }
 }

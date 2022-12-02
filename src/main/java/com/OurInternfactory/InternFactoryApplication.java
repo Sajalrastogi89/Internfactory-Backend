@@ -16,11 +16,9 @@ import java.util.List;
 @ComponentScan({ "com.OurInternfactory.*" })
 public class InternFactoryApplication implements CommandLineRunner{
     private final RoleRepo roleRepo;
-
     public InternFactoryApplication(RoleRepo roleRepo) {
         this.roleRepo = roleRepo;
     }
-
     public static void main(String[] args) {
         SpringApplication.run(InternFactoryApplication.class, args);
     }

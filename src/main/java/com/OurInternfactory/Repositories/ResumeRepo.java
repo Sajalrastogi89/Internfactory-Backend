@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ResumeRepo extends JpaRepository<Resume, Integer> {
     Resume findByUser(User user);
+    Boolean existsResumeByUser(User User);
 }

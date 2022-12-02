@@ -18,14 +18,12 @@ import java.util.List;
 @Table(name = "Categories1")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int categoryId;
     @Column(name = "CateName", nullable = false)
     private String categoryName;
-    @Column(name = "imageName")
     private String imageName;
-    @Column(name = "count")
     private int count;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Internships> internshipsList = new ArrayList<>();
 }

@@ -33,19 +33,16 @@ public class OTPService {
     public int OTPRequestMobile(String phoneNumber){
         Random rand = new Random();
         int otpCheck = rand.nextInt(899999) +100000;
-
-
-        String subject = "OTP Verification";
         String message = "Dear User," +
-                "\nThe One Time Password (OTP) to verify your Email Address is " + otpCheck +
+                "\nThe One Time Password (OTP) to verify two step verification is " + otpCheck +
                 "\nThe One Time Password is valid for the next 10 minutes."+
-                "\n(This is an auto generated email, so please do not reply back.)" +
+                "\n(This is an auto generated sms, so please do not reply back.)" +
                 "\nRegards," +
                 "\nTeam INTERNFACTORY";
         String to = phoneNumber;
         if(!phoneNumber.contains("+91")) to = "+91"+phoneNumber;
         SmsRequest smsRequest = new SmsRequest(to, message);
-        sendSMS(smsRequest);
+        this.sendSMS(smsRequest);
 //        this.emailService.sendEmail(subject, message, to);
         return otpCheck;
     }

@@ -1,6 +1,9 @@
 package com.OurInternfactory.Services;
 
+import com.OurInternfactory.Models.User;
 import com.OurInternfactory.Payloads.*;
+
+import java.util.List;
 
 public interface InternshipServices {
     InternshipsDto createInternship(InternshipAssessment internshipAssessment, Integer categoryId, String hostEmail);
@@ -14,6 +17,8 @@ public interface InternshipServices {
     void deleteInternship(Integer internshipId);
 
     InternshipResponse getAllInternships(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+    InternshipResponse getAllInternshipsHostedByUser(User user, Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
+    InternshipResponse getAllTrendingInternship(Integer pageNumber, Integer pageSize, String sortBy, String sortDir);
 
     InternshipsDto getSingleInternship(Integer internshipId);
 

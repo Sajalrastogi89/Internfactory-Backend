@@ -1,9 +1,8 @@
 package com.OurInternfactory.Controllers;
 
 import com.OurInternfactory.Payloads.ApiResponse;
-import com.OurInternfactory.Payloads.EditResumeDto;
-import com.OurInternfactory.Payloads.ForgetEmail;
 import com.OurInternfactory.Payloads.ResumeDTO;
+import com.OurInternfactory.Security.JwtTokenHelper;
 import com.OurInternfactory.Services.ResumeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,37 +13,34 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class ResumeController {
     private final ResumeService resumeService;
-    public ResumeController(ResumeService resumeService) {
+    private final JwtTokenHelper jwtTokenHelper;
+    public ResumeController(ResumeService resumeService, JwtTokenHelper jwtTokenHelper) {
         this.resumeService = resumeService;
+        this.jwtTokenHelper = jwtTokenHelper;
     }
-
-
-
-    //get the resume using the email
-    @PostMapping("/getResume")
-    public ResponseEntity<ResumeDTO> getResume(@RequestBody ForgetEmail forgetEmail){
-        ResumeDTO resumeDTO = this.resumeService.getUserResume(forgetEmail.getEmail());
-        return new ResponseEntity<>(resumeDTO, HttpStatus.OK);
+//get the resume using the email
+    @GetMapping("/getResume")
+    public ResponseEntity<?> getResume(@RequestHeader("Authorization") String bearerToken){
+        try {
+            ResumeDTO resumeDTO = this.resumeService.getUserResume(this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7)));
+            return new ResponseEntity<>(resumeDTO, HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(new ApiResponse("No Resume Found", false), HttpStatus.NOT_FOUND);
+        }
     }
-
-
-
-    //Edit the resume by the user
+//Edit the resume by the user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
-    @PutMapping("/editResume")
-    public ResponseEntity<ResumeDTO> setResume(@RequestBody EditResumeDto editResumeDto){
-        ResumeDTO UpdatedResume = this.resumeService.setUserResume(editResumeDto.getEmail(), editResumeDto.getResumeDTO());
+    @PostMapping("/editResume")
+    public ResponseEntity<ResumeDTO> setResume(@RequestBody ResumeDTO editResumeDto, @RequestHeader("Authorization") String bearerToken) {
+        ResumeDTO UpdatedResume = this.resumeService.setUserResume(this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7)), editResumeDto);
         return new ResponseEntity<>(UpdatedResume, HttpStatus.OK);
     }
-
-
-
-    //Delete the resume by the user
+//Delete the resume by the user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
     @DeleteMapping("/deleteResume")
-    public ResponseEntity<ApiResponse> deleteResume(@RequestBody ForgetEmail forgetEmail){
-        String message = this.resumeService.deleteUserResume(forgetEmail.getEmail());
+    public ResponseEntity<ApiResponse> deleteResume(@RequestHeader("Authorization") String bearerToken) {
+        String message = this.resumeService.deleteUserResume(this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7)));
         return new ResponseEntity<>(new ApiResponse(message, true), HttpStatus.OK);
     }
-
 }

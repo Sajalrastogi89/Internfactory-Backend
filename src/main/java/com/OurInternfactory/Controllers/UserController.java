@@ -10,7 +10,6 @@ import com.OurInternfactory.Services.UserService;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,93 +29,69 @@ public class UserController {
     private String path;
     private final UserRepo userRepo;
     public final JwtTokenHelper jwtTokenHelper;
-
     public UserController(UserService userService, FileServices fileServices, UserRepo userRepo, JwtTokenHelper jwtTokenHelper) {
         this.userService = userService;
         this.fileServices = fileServices;
         this.userRepo = userRepo;
         this.jwtTokenHelper = jwtTokenHelper;
     }
-
-
-    //--------------------------------------------------  CRUD -------------------------------------------------------------------------------
-    //POST -create user
-    @PostMapping("/")
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-        UserDto createdUserDto = this.userService.createUser(userDto);
-        return new ResponseEntity<>(createdUserDto, HttpStatus.CREATED);
-    }
-
-    //PUT -update user
-    @PutMapping("/{userid}")
-    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto, @PathVariable("userid") Integer userId) {
-        UserDto updatedUser = this.userService.updateUser(userDto, userId);
-        return ResponseEntity.ok(updatedUser);
-    }
-
-    //------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-    //Delete - delete user
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse> deleteUser(@PathVariable("userId") Integer userid) {
-        this.userService.DeleteUser(userid);
+//Delete - delete user
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<ApiResponse> deleteUser(@RequestHeader("Authorization") String bearerToken){
+        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
+        User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+userEmail, 0));
+        this.userService.DeleteUser(user.getId());
         return new ResponseEntity<>(new ApiResponse("User Deleted Successfully", true), HttpStatus.OK);
     }
-
-
-    //GET - user get all the users
+//Delete - delete user
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/deleteUserAdmin/{UserId}")
+    public ResponseEntity<?> deleteAUser(@PathVariable("UserId") Integer UserId){
+        this.userService.DeleteUser(UserId);
+        return new ResponseEntity<>(new ApiResponse("User Deleted Successfully", true), HttpStatus.OK);
+    }
+//GET - user get all the users
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(this.userService.getAllUsers());
     }
-
-
-    //Get a user using user Id
+//Get a user using user Id
     @GetMapping("/{userId}")
     public ResponseEntity<UserDto> getSingleUser(@PathVariable("userId") Integer userId) {
         return ResponseEntity.ok(this.userService.getUserById(userId));
     }
-
-
-    //Edit a user account by the user
+//Edit a user account by the user
     @PreAuthorize("hasAnyRole('NORMAL', 'ADMIN')")
     @PutMapping("/editUserInfo")
-    public ResponseEntity<ApiResponse> updateProfile(@Valid @RequestBody EditUserDto editUserDto) {
+    public ResponseEntity<?> updateProfile(@Valid @RequestBody EditUserDto editUserDto, @RequestHeader("Authorization") String bearerToken){
+        editUserDto.setEmail(this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7)));
         String message = this.userService.updateUserProfile(editUserDto);
         ApiResponse apiResponse = new ApiResponse(message, true);
         return ResponseEntity.ok(apiResponse);
     }
-
-
-    //get the user profile using the user email or username
-    @PostMapping("/getUserInfo")
-    public ResponseEntity<GetProfileResponse> getUserInfo(@RequestBody ForgetEmail forgetEmail) {
-        forgetEmail.setEmail(forgetEmail.getEmail().toLowerCase());
-        String finalEmail = forgetEmail.getEmail();
+//get the user profile using the user email or username
+    @GetMapping("/getUserInfo")
+    public ResponseEntity<GetProfileResponse> getUserInfo(@RequestHeader("Authorization") String bearerToken){
+        String finalEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
         User user = this.userRepo.findByEmail(finalEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email :" + finalEmail, 0));
         GetProfileResponse editUserDto = new GetProfileResponse(user.getId(), user.getProfilePhoto(), user.getFirstname(), user.getLastname(), user.getGender(), user.getEmail(), user.getPhoneNumber());
         return new ResponseEntity<>(editUserDto, HttpStatus.OK);
     }
-
-
-    //To upload the profile photo
-    @PostMapping("/setprofilephoto/{userEmail}")
+//To upload the profile photo
+    @PutMapping("/setprofilephoto")
     public ResponseEntity<FileDto> settProfileImage(
-            @RequestParam("image") MultipartFile image, @PathVariable String userEmail
-    ) {
-            String filename = null;
-        if (image.getContentType().equals("image/png")
-                || image.getContentType().equals("image/jpg")
-                || image.getContentType().equals("image/jpeg")) {
+            @RequestParam("image") MultipartFile image, @RequestHeader("Authorization") String bearerToken){
+        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
+        String filename = null;
+        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
             User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email :" + userEmail, 0));
             try {
                 filename = this.fileServices.uploadImage(path, image);
                 user.setProfilePhoto(filename);
                 this.userRepo.save(user);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
                 return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -126,12 +101,10 @@ public class UserController {
                 return new ResponseEntity<>(new FileDto(filename, "File is not of image type(JPEG/ JPG or PNG)!!!"), HttpStatus.BAD_REQUEST);
         }
     }
-
-
+// To enable two-step verification
     @PutMapping("/twoStepEnable")
     public ResponseEntity<?> EnableTwoStep(@RequestHeader("Authorization") String bearerToken){
-        bearerToken = bearerToken.substring(7);
-        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken);
+        String userEmail= this.jwtTokenHelper.getUsernameFromToken(bearerToken.substring(7));
         User user = this.userRepo.findByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User", "Email: "+userEmail, 0));
         if(user.getPhoneNumber() != null) {
             if (user.getTwoStepVerification()) {
@@ -149,11 +122,7 @@ public class UserController {
         }
     }
 }
-
-
-
-
-    //    To view the profile photo
+//    To view the profile photo
 //    @GetMapping(value = "/getprofilephoto", produces = MediaType.IMAGE_JPEG_VALUE)
 //    public void getProfileImage(@RequestBody ForgetEmail forgetEmail, HttpServletResponse response) throws IOException {
 //        User user = this.userRepo.findByEmail(forgetEmail.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+forgetEmail.getEmail(), 0));

@@ -31,10 +31,10 @@ public class FileServicesImpl implements FileServices {
         return newFileName;
     }
 
-    @Override
-    public InputStream getImage(String path, String fileName) throws FileNotFoundException {
-        String fullPath = path +File.separator + fileName;
-        InputStream is = new FileInputStream(fullPath);
-        return is;
-    }
+//    @Override
+//    public InputStream getImage(String path, String fileName) throws FileNotFoundException {
+//        String fullPath = path +File.separator + fileName;
+//        InputStream is = new FileInputStream(fullPath);
+//        return is;
+//    }
 }

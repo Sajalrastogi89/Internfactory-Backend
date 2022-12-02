@@ -13,15 +13,11 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditUserDto {
-    @Email(message = "Email Address is not Valid!!")
     private String email;
     @NotEmpty
     private String firstname;
     private String lastname;
     private String gender;
-    @NotEmpty
-    @Email(message = "Email Address is not Valid!!")
-    private String newemail;
     @Pattern(regexp="(^$|[0-9]{10})", message = "Phone number must be 10 digit long")
     private String phoneNumber;
 }
