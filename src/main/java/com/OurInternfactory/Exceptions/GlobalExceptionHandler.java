@@ -12,14 +12,10 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse> resourceNotFoundExceptionHandler(ResourceNotFoundException ex){
-        String message = ex.getMessage();
-        ApiResponse apiResponse = new ApiResponse(message, false);
-        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ApiResponse(ex.getMessage(), false), HttpStatus.NOT_FOUND);
     }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> hanadleMethodArgsNotValidException(MethodArgumentNotValidException ex){
         Map<String, String> resp = new HashMap<>();
@@ -30,11 +26,8 @@ public class GlobalExceptionHandler {
         });
         return new ResponseEntity<> (resp, HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler(Apiexception.class)
     public ResponseEntity<ApiResponse> HandleApiException(Apiexception ex){
-        String message = ex.getMessage();
-        ApiResponse apiResponse = new ApiResponse(message, true);
-        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ApiResponse(ex.getMessage(), true), HttpStatus.BAD_REQUEST);
     }
 }

@@ -13,12 +13,12 @@ import java.util.List;
 @Entity
 public class Submission {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<QuestionModel> questions;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private User user;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Internships internships;
 }

@@ -19,9 +19,7 @@ public class FileController {
     public FileController(FileServices fileServices){
         this.fileServices = fileServices;
     }
-
-
-    //Upload FILE API
+//Upload FILE API
     @PostMapping("/upload")
     public ResponseEntity<FileDto> fileUpload(
         @RequestParam("image") MultipartFile image
@@ -33,10 +31,8 @@ public class FileController {
             e.printStackTrace();
             return new ResponseEntity<>(new FileDto(filename, "Image not uploaded, Server error !!!"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         return new ResponseEntity<>(new FileDto(filename, "Image is Successfully Uploaded !!!"), HttpStatus.OK);
     }
-
 
     //Serving API not to be used
 

@@ -73,22 +73,6 @@ public class UserServiceImpl implements UserService {
         this.userRepo.save(user);
     }
     @Override
-    public UserDto createUser(UserDto userDto) {
-        User user  = this.DtoToUser(userDto);
-        User savedUser = this.userRepo.save(user);
-        return this.UserToDto(savedUser);
-    }
-    @Override
-    public UserDto updateUser(UserDto userDto, Integer userId) {
-        User user = this.userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "ID", userId));
-        user.setFirstname(userDto.getFirstname());
-        user.setLastname(userDto.getLastname());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        User updatedUser = this.userRepo.save(user);
-        return this.UserToDto(updatedUser);
-    }
-    @Override
     public String updateUserProfile(EditUserDto editUserDto){
         User userUpdate = this.userRepo.findByEmail(editUserDto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("User", "Email :"+editUserDto.getEmail(), 0));
         userUpdate.setFirstname(editUserDto.getFirstname());
@@ -147,12 +131,7 @@ public class UserServiceImpl implements UserService {
         List<Category> cat = this.categRepo.findAll(Sort.by(Sort.Direction.DESC,"count"));
         return cat.stream().map(this::CategoryToDto).collect(Collectors.toList());
     }
-    @Override
-    public List<InternshipsDto> getAllTrendingInternship() {
-        List<Internships> cat = this.internshipRepo.findAll(Sort.by(Sort.Direction.DESC, "submissions"));
-        return cat.stream().map(this::InternshipToDto).collect(Collectors.toList());
 
-    }
     public User DtoToUser(UserDto userdto) {
         return this.modelMapper.map(userdto, User.class);
     }
@@ -160,7 +139,5 @@ public class UserServiceImpl implements UserService {
     public CategoryDTO CategoryToDto(Category category){
         return this.modelMapper.map(category, CategoryDTO.class);
     }
-    public InternshipsDto InternshipToDto(Internships internship){
-        return this.modelMapper.map(internship, InternshipsDto.class);
-    }
+
 }

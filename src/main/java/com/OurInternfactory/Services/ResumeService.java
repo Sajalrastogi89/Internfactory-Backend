@@ -8,7 +8,6 @@ import com.OurInternfactory.Repositories.ResumeRepo;
 import com.OurInternfactory.Repositories.UserRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 @Service
 public class ResumeService {
     private final ModelMapper modelMapper;

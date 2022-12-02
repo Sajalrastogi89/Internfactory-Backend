@@ -17,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Internships {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
     @Column(name = "displayName", length=150, nullable = false)
     private String displayName;
@@ -38,16 +38,19 @@ public class Internships {
     private String who_can_apply;
     @Column(name = "perks", length = 1000)
     private String perks;
-
     private String imageUrl;
     private Date issuedDate;
     @Column(name = "active")
     private boolean active;
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Category category;
+//ProviderHOST
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    public User userProvider;
+//UserAPPLICATION
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     public Set<User> user;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Submission submissionModel;

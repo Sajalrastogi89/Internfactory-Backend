@@ -7,8 +7,6 @@ public interface UserService {
 
     void registerNewUser(UserDto user, int otp);
     void registerNewHost(RegisterHost user, int otp);
-    UserDto createUser(UserDto user);
-    UserDto updateUser(UserDto user, Integer userId);
     String updateUserProfile(EditUserDto editUserDto);
     boolean isOTPValid(String email);
 
@@ -19,7 +17,4 @@ public interface UserService {
     boolean emailExists(String email);
     List<CategoryDTO> getAllCategory();
     List<CategoryDTO> getAllTrendingCategory();
-
-    List<InternshipsDto> getAllTrendingInternship();
-//    void export(HttpServletResponse response, CVGenerator cvData) throws IOException;
 }

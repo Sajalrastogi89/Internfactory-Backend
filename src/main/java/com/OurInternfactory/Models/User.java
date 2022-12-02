@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Setter
 public class User implements UserDetails{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
     @Column(name = "firstname", nullable = false)
     private String firstname;
@@ -62,7 +62,6 @@ public class User implements UserDetails{
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Resume resume;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map((role)-> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
