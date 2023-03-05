@@ -63,6 +63,7 @@
 <div style="text-align: center; font-size: 20px">
     <a href="https://www.figma.com/file/Jh42e6wF6jDRy2CJ0WP7cT/InternFactory?node-id=3%3A9"><b>>> Click to view Figma Designs <<</b></a>
 </div>
+
 <div style="border: 1px solid #575757;
     padding: 20px;
     overflow: hidden;
@@ -74,8 +75,7 @@
     flex-wrap: wrap;
     justify-content: space-evenly;">
 
-      https://user-images.githubusercontent.com/103812595/222965408-d9afe606-87ae-4279-ab90-1d51745ff935.mp4
-
+https://user-images.githubusercontent.com/103812595/222965408-d9afe606-87ae-4279-ab90-1d51745ff935.mp4
 </div>
 <div style="border: 1px solid #575757;
     padding: 20px;
