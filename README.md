@@ -74,7 +74,9 @@
     flex-wrap: wrap;
     justify-content: space-evenly;">
     <div>
-    https://github.com/pranavbisaria/Internfactory-Backend/blob/master/src/main/resources/static/Screenshots/video.mp4
+
+https://user-images.githubusercontent.com/103812595/222965408-d9afe606-87ae-4279-ab90-1d51745ff935.mp4
+
     </div>
     <img src="src/main/resources/static/Screenshots/1.jpg" alt="Logo" height="500px" class="screenshot">
     <img src="src/main/resources/static/Screenshots/2.jpg" alt="Logo" height="500px" class="screenshot">
