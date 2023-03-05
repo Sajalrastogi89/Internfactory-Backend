@@ -73,11 +73,20 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;">
-    <div>
 
-https://user-images.githubusercontent.com/103812595/222965408-d9afe606-87ae-4279-ab90-1d51745ff935.mp4
+      https://user-images.githubusercontent.com/103812595/222965408-d9afe606-87ae-4279-ab90-1d51745ff935.mp4
 
-    </div>
+</div>
+<div style="border: 1px solid #575757;
+    padding: 20px;
+    overflow: hidden;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;">
     <img src="src/main/resources/static/Screenshots/1.jpg" alt="Logo" height="500px" class="screenshot">
     <img src="src/main/resources/static/Screenshots/2.jpg" alt="Logo" height="500px" class="screenshot">
     <img src="src/main/resources/static/Screenshots/3.jpg" alt="Logo" height="500px" class="screenshot">
