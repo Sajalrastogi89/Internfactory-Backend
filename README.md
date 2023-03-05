@@ -73,6 +73,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;">
+    <div>
+    https://github.com/pranavbisaria/Internfactory-Backend/blob/master/src/main/resources/static/Screenshots/video.mp4
+    </div>
     <img src="src/main/resources/static/Screenshots/1.jpg" alt="Logo" height="500px" class="screenshot">
     <img src="src/main/resources/static/Screenshots/2.jpg" alt="Logo" height="500px" class="screenshot">
     <img src="src/main/resources/static/Screenshots/3.jpg" alt="Logo" height="500px" class="screenshot">
