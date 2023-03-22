@@ -1,0 +1,1216 @@
+{
+	"info": {
+		"_postman_id": "bbb22028-b42e-494c-8bde-6be72f2c4148",
+		"name": "Internfactory",
+		"description": "The Backend Application is based on the spring boot version 2.6.13\nAnd JAVA version 11\n\nThe database used is H2 Database\n\nThis Application consist of all the API required for the complete working of the Internfactory Platform where user can host the internships and the applicant user can apply the internships hosted on the platform.\n\nHosted On - https://internfactory.up.railway.app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ADMIN CONTROL",
+			"item": [
+				{
+					"name": "Get All users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/2",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/deleteUserAdmin/26",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"deleteUserAdmin",
+								"26"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "AUTH",
+			"item": [
+				{
+					"name": "Login/Token Generator",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "ieyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbnRlcm5mYWN0b3J5QGdtYWlsLmNvbSIsImV4cCI6MTY2Njk3NDQzMSwiaWF0IjoxNjY2OTcyNjMxfQ.I1OvwYkdbXln-xGJhhD-ae1He3lpVEwaFk0RAqaE5xyxXm00z56Md-VTgL6diuI6KVqCnTKEcoaffRDWMYyWuw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"teaminternfactory@gmail.com\",\r\n    \"password\": \"Internfactory@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/auth/login",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignUp",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcmFuYXZiaXNhcml5YTI5QGdtYWlsLmNvbSIsImV4cCI6MTY2Njk5MTk0MiwiaWF0IjoxNjY2OTkwMTQyfQ.Qj6sr0tB_HWf7KVASctWms-Pk-xIBCttyS5pyErviTQacZwRqOYWwbD_rHWPozuXd5jqFlJB3bdcoijKmfSeEQ",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Fogev\",\r\n    \"lastname\": \"Eilnews\",\r\n    \"email\": \"birof39957@cnogs.com\",\r\n    \"password\": \"fogevEilnews@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/auth/signup",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Signup OTP",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"birof39957@cnogs.com\",\r\n    \"one_time_password\":\"398092\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/auth/verifyotp",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verifyotp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot Password/ OTP generator",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"birof39957@cnogs.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/auth/forget",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"forget"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Reset Password OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"birof39957@cnogs.com\",\r\n    \"one_time_password\":\"929626\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/auth/verifyPassOtp",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verifyPassOtp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"birof39957@cnogs.com\",\r\n    \"otp\":\"929626\",\r\n    \"password\":\"gocefTeknowa@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/auth/resetpass",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"resetpass"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PROFILE",
+			"item": [
+				{
+					"name": "Edit Profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\":\"Raj\",\r\n    \"lastname\":\"Gautam\",\r\n    \"gender\":\"Male\",\r\n    \"phoneNumber\":\"5725875622\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/editUserInfo",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"editUserInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/getUserInfo",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"getUserInfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/deleteUser",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"deleteUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add ProfilePhoto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbnRlcm5mYWN0b3J5QGdtYWlsLmNvbSIsImV4cCI6MTY2Njk3NjYwMCwiaWF0IjoxNjY2OTc0ODAwfQ.AXDcCDdtAkbKKhUrgirYSjYYy0ep5jA1J7X5VckmO7gD-VqO3wSidmLDGKlu3cSDAM7rBaCkvuBgwmPD4c4Okw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/hii/Downloads/Telegram Desktop/IMG20221108153506.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/setprofilephoto",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"setprofilephoto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enabled/Disabled two step verification",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/twoStepEnable",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"twoStepEnable"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resume",
+			"item": [
+				{
+					"name": "Create/Edit resume",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\":\"Pranav Bisaria\",\r\n    \"education\":\"1. 10th Ghaziabad Public School-94%\\n2. 12th Ghaziabad Public School-94%\\n3. 93 percentile in JEE mains\\n4. 9.7 CGPA in Btech 1st Year\",\r\n    \"internships\":\"C++ Modern Solution\",\r\n    \"trainingCourses\":\"1. Complete C, Basic C++ and Basic Java\\n2. Traniee at SI AKGEC\",\r\n    \"projects\":\"1. Student Data Management System\\n2. TIC TAC TOE\\n3. DOODLE Jum(Javascript Based)\\n4. School Billing Management System\\n5. Portfolio Website\",\r\n    \"skills\":\"1. Complete C language\\n2. OOPS\\n3.C++ Basic\\n4. Advance Java\\n5. Spring Boot\\n.6. HTML\\n7. CSS\\n8. JavaScript\",\r\n    \"portfolio\":\"https://github.com/pranavbisaria/My-Portfolio\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/editResume",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"editResume"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Resume",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/getResume",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"getResume"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Resume",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/deleteResume",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"deleteResume"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Internships Management",
+			"item": [
+				{
+					"name": "Get the assessment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/getAssessment/internship/167",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"getAssessment",
+								"internship",
+								"167"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Apply Internships",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"questions\": [\r\n        {\r\n            \"question\": \"Why should we hire you?\",\r\n            \"answer\": \"For starters, I have all the skills and experience listed in the job description, and I'm confident that I can make an immediate impact on your company. It's not just my background in leading successful projects for Fortune 500 companies, but also my passion for the industry that drives me to succeed\"\r\n        },\r\n        {\r\n            \"question\": \"Share Your work\",\r\n            \"answer\": \"Detail-oriented software engineering student with a comprehensive understanding of Java 8. Won second place at CodeDay 2018 Hackathon. Seeking to use coding and debugging skills during a summer internship\"\r\n        },\r\n        {\r\n            \"question\": \"Have you worked in team projects\",\r\n            \"answer\": \"I prefer to work in a friendly team-centric work environment. However, I know how to do what I need to do, but only after the task is assigned. Before that, I always communicate and exchange opinions with my team members.\"\r\n        },\r\n        {\r\n            \"question\": \"What are your strengths?\",\r\n            \"answer\": \"I am a keen listener, I can easily socialize with others and easily adapt myself in most of the situations, I always try to upgrade my skills whenever I get the opportunity, always focused on learning new things and a kind-hearted person who believes in helping others.\"\r\n        },\r\n        {\r\n            \"question\": \"What are your strengths?\",\r\n            \"answer\": \"I have some weaknesses also like as in the long run sometimes I feel demotivated and to overcome this I prefer to talk to my mother and listening good music and I also speak a little bit fast so for that I am practising on it on the daily basis and trying to conquer it.\"\r\n        },\r\n        {\r\n            \"question\": \"What are your hobbies?\",\r\n            \"answer\": \"I have only one hobby. Yet, it consumes all my free time. I enjoy reading and have always been a voracious reader.\\nAlthough I prefer reading fiction, I make a deliberate effort to read at least one non-fiction book in a couple of months.\\nMy first book was “Famous Five Go to Kirrin Island” at the age of ten. What I truly treasure about my hobby is its power to transport me to different locations whilst I’m still on my couch.\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships/266/apply",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships",
+								"266",
+								"apply"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Submission",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/submission/277",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"submission",
+								"277"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Submission",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/submission/277",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"submission",
+								"277"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trending internships",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\":\"0\",\r\n    \"pageSize\":\"5\",\r\n    \"sortBy\":\"id\",\r\n    \"sortDir\":\"asc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/trendingInternships",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"trendingInternships"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category And Trendings",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/getCategory",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"getCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All the trending category",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/getTrending",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"getTrending"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Searching And Filter",
+			"item": [
+				{
+					"name": "Get All Internships",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/getTrending",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"getTrending"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get internship of category",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\":\"0\",\r\n    \"pageSize\":\"5\",\r\n    \"sortBy\":\"id\",\r\n    \"sortDir\":\"asc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get internship by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/getinternships/183",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"getinternships",
+								"183"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Interships Applied By the User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\":\"0\",\r\n    \"pageSize\":\"5\",\r\n    \"sortBy\":\"id\",\r\n    \"sortDir\":\"asc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/user/101/internships",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"user",
+								"101",
+								"internships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search By Title Containing",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\":\"0\",\r\n    \"pageSize\":\"5\",\r\n    \"sortBy\":\"title\",\r\n    \"sortDir\":\"asc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships/search/eb d",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships",
+								"search",
+								"eb d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NOT A API(Serving Link only)",
+			"item": [
+				{
+					"name": "Image URL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/file/default.png",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"file",
+								"default.png"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CompanySide",
+			"item": [
+				{
+					"name": "SignUp Host",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "ieyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpbnRlcm5mYWN0b3J5QGdtYWlsLmNvbSIsImV4cCI6MTY2Njk3NDQzMSwiaWF0IjoxNjY2OTcyNjMxfQ.I1OvwYkdbXln-xGJhhD-ae1He3lpVEwaFk0RAqaE5xyxXm00z56Md-VTgL6diuI6KVqCnTKEcoaffRDWMYyWuw",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"companyEmail\":\"moxihar375@covbase.com\",\r\n    \"password\":\"moxiharCovbase@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/auth/signupHost",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signupHost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Internship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"internshipsDto\": {\r\n        \"title\": \"Content Writing History Internship in Noida at Evelyn Learning Systems\",\r\n        \"type\": \"In-office\",\r\n        \"tenure\": \"4 Months\",\r\n        \"stipend\": \"15,000 /month\",\r\n        \"lastDate\": \"3/12/2022\",\r\n        \"about\": \"Selected intern's day-to-day responsibilities include:\\n\\n1. Working on the primary content development work, of well-explained solutions (in a step-by-step manner) to unsolved end-chapter exercises in school textbooks\\n2. Reviewing the content created by other SMEs and guiding them in order to prepare content of the highest quality\\n3. Providing solutions of good quality\\n4. Maintaining the 100% accuracy standard\\n5. Solving extensive research-based questions (should be able to connect the dots by reading extensively about the given topic)\",\r\n        \"skills\": \"1. Content Writing\\n2. English Proficiency (Written)\",\r\n        \"who_can_apply\": \"Only those candidates can apply who:\\n\\n1. are available for full time (in-office) internship\\n2. can start the internship between 15th Nov'22 and 20th Dec'22\\n3. are available for duration of 4 months\\n4. have relevant skills and interests\",\r\n        \"perks\": \"1. Certificate\\n2. Informal dress code\\n3. 5 days a week\"\r\n    },\r\n    \"questions\": [\r\n        {\r\n            \"question\": \"Why should we hire you?\"\r\n        },\r\n        {\r\n            \"question\": \"Share Your work\"\r\n        },\r\n        {\r\n            \"question\": \"Have you worked in team projects\"\r\n        },\r\n        {\r\n            \"question\": \"What are your strengths?\"\r\n        },\r\n        {\r\n            \"question\": \"What are your strengths?\"\r\n        },\r\n        {\r\n            \"question\": \"What are your hobbies?\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/category/1/internships",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"category",
+								"1",
+								"internships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pause/Resume Internship",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships/266/pause",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships",
+								"266",
+								"pause"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Internship Hosted",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\":\"0\",\r\n    \"pageSize\":\"5\",\r\n    \"sortBy\":\"id\",\r\n    \"sortDir\":\"asc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internshipsHosted",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internshipsHosted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Internship",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships/201",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships",
+								"201"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Internship",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"title\": \"Full Stack Web Developer\",\r\n        \"about\": \"A person needed who is expert in using html css and javascript, Also he/she must be famlier with ReactJs. In Backend he/she must uses Spring Boot with hybernate and JPA\",\r\n        \"lastDate\": \"22/08/2023\",\r\n        \"tenure\": \"5 Months\",\r\n        \"stipend\": \"3000 per month\",\r\n        \"imageUrl\": \"default.png\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships/183",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships",
+								"183"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload image Internship",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/hii/Downloads/Telegram Desktop/IMG20221108153624.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships/266/setimage",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships",
+								"266",
+								"setimage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View All User Applied",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pageNumber\":\"0\",\r\n    \"pageSize\":\"5\",\r\n    \"sortBy\":\"id\",\r\n    \"sortDir\":\"asc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://internfactory.up.railway.app/api/internships/appliedUser/29",
+							"protocol": "https",
+							"host": [
+								"internfactory",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"internships",
+								"appliedUser",
+								"29"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZWFtaW50ZXJuZmFjdG9yeUBnbWFpbC5jb20iLCJpYXQiOjE2Njk5NzgyNjAsImV4cCI6MTY3MDA2NDY2MH0.enZLj0wDKW55zi7suEUJXrqCq2Lr7kMlNCn48_VbEk8uWGj5S5TQ9Vjo2QxajRYlVmr9Fp0QlcqrwkxNMhaRjg",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
